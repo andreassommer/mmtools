@@ -268,6 +268,7 @@ end
 function content = retrieveVariables(varnames)
 % returns the requested variables als field of content structure
   varnames = ensureCell(varnames);
+  if isempty(varnames), content = []; return;  end
   for k = 1:length(varnames)
      v = varnames{k};
      [content.(v), errorflag] = retrieveVariable(v);
