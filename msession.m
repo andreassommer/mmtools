@@ -1,6 +1,7 @@
-function varargout = msession(command, filename, what)
+function varargout = msession(command, filename, selection, silent)
 % MSESSION('load', filename)
-% MSESSION('load', filename, what)
+% MSESSION('load', filename, selection)
+% MSESSION('load', filename, selection, silent)
 % MSESSION('save', ...)
 % X = MSESSION('dump', ...)
 %
@@ -9,16 +10,22 @@ function varargout = msession(command, filename, what)
 % as well as all open editor files.
 %
 % MSESSION('load', filename) 
-%   restores all content from file
-% MSESSION('load', filename, what) 
+%   restores all content from specified file. 
+%   If filename does not exist, the default file 'msession' is used.
+% MSESSION('load', filename, selection) 
 %   restores selected contents from file
-%   what:  'files' --> reopen the editor files
-%          'vars'  --> load the variables (may overwrite existing ones!)
-%          'all'   --> restore everything
+%   selection:  'files' --> reopen the editor files
+%                'vars' --> load the variables (may overwrite existing ones!)
+%                'path' --> restore matlab search path
+%             'session' --> combination of 'files' and 'vars'
+%          'everything' --> restore everything
+%                 'all' --> same as 'everything'
 % MSESSION('save', filename)
 %   stores all content into file
-% MSESSION('save', filename, what)
-%   stores selected contents into file; see above for description of 'what'
+% MSESSION('save', filename, selection)
+%   stores selected contents into file; see above for description of 'selection'
+% MSESSION('save', filename, selection, silent)
+%   silent --> true|false : set to true to disable text output [default: false]
 % X = MSESSION('dump',...) 
 %   dumps the contents to structure X instead writing to file
 %
@@ -31,22 +38,23 @@ if ~(ischar(command) || isstring(command))
    error('First argument (command) must be a character array or a string.')
 end
 
-% default: everything
-if ~exist('what', 'var'), what = 'everything'; end
+% defaults
+if (nargin < 2),  filename = 'msession';  end
+if (nargin < 3), selection = 'session';   end
+if (nargin < 4),    silent = false;       end
 
-% what to do
+% choose what to do
 switch lower(command)
 
    case {'load'}
-      restoreMSessionFromFile(filename, what);
+      restore_MSESSION_from_file(filename, selection);
 
    case {'save'}
-      saveMSessionToFile(filename, what)
+      save_MSESSION_to_file(filename, selection)
 
    case {'dump'}
-      MSESSION = saveMSessionToVar(what);
-      varargout{1} = MSESSION;
-
+      varargout{1} = save_MSESSION_to_var(selection);
+     
    otherwise
       error('Unknown command: %s', command);
 
@@ -56,6 +64,19 @@ end % of switch
 % finito
 return
 
+function showMessage(varargin)
+   if ~silent
+      fprintf(varargin{:});
+   end
+end
+
+function showError(ME, varargin)
+   errmsg = sprintf(varargin{:});
+   fprintf('\n### %s', errmsg);
+   if ~isempty(ME)
+      fprintf('--- ERROR: %s\n', ME.identifier)
+   end
+   fprintf('\n')
 end
 
 
@@ -63,26 +84,33 @@ end
 
 %% HELPERS
 
-function saveMSessionToFile(filespec, what)
-   MSESSION = saveMSessionToVar(what);
+function save_MSESSION_to_file(filespec, selection)
    filespec = ensureExtension(filespec);
+   showMessage('*** Saving MSESSION to file %s\n', filespec)
+   MSESSION = save_MSESSION_to_var(selection);
    save(filespec, 'MSESSION', '-mat')
 end
 
 
-function MSESSION = loadMSessionFromFile(filespec)
+function MSESSION = load_MSESSION_from_file(filespec)
    filespec = ensureExtension(filespec);
-   C = load(filespec, '-mat');
-   if ~isfield(C, 'MSESSION')
-      error('File %s does not look like an MSESSION file.', filespec)
+   showMessage('*** Loading MSESSION from file: %s\n', filespec)
+   try
+      C = load(filespec, '-mat');
+      if ~isfield(C, 'MSESSION')
+         error('MSESSION:InvalidFileFormat', 'File %s does not look like an MSESSION file.', filespec)
+      end
+      MSESSION = C.MSESSION;
+   catch ME
+      showError(ME, 'Error loading MSESSION file.')
+      MSESSION = [];
    end
-   MSESSION = C.MSESSION;
 end
 
 
-function restoreMSessionFromFile(filespec, what)
-   MSESSION = loadMSessionFromFile(filespec);
-   restoreMSession(MSESSION, what)
+function restore_MSESSION_from_file(filespec, selection)
+   MSESSION = load_MSESSION_from_file(filespec);
+   restore_MSESSION(MSESSION, selection)
 end
 
 
@@ -95,34 +123,70 @@ function filespec = ensureExtension(filespec)
 end
 
 
-function restoreMSession(MSESSION, what)
+function restore_MSESSION(MSESSION, selection)
 % restores specified things from MSESSION structure
-   switch lower(what)
-      case 'everything'
-         restoreVariables(MSESSION);
+   showMessage('*** MSESSION restore started.\n')
+   switch lower(selection)
+      case {'everything', 'all'}
+         restorePath(MSESSION)
          restoreEditorFiles(MSESSION)
+         restoreVariables(MSESSION);
+      case 'session'
+         restoreEditorFiles(MSESSION)
+         restoreVariables(MSESSION);
       case 'variables'
          restoreVariables(MSESSION);
       case 'files'
          restoreEditorFiles(MSESSION)
+      case 'path'
+         restorePath(MSESSION)
       otherwise
-         error('Unknown selection: %s', what);
+         error('MSESSION:unknownSelection', 'Unknown selection: %s', selection);
+   end
+   showMessage('*** MSESSION restore finished.\n')
+end
+
+function MSESSION = save_MSESSION_to_var(selection)
+% saves specified things to MSESSION structure
+   showMessage('*** MSESSION store started.\n')
+   switch lower(selection)
+      case {'everything', 'all'}
+         MSESSION.path        = retrievePath();
+         MSESSION.editorfiles = retrieveOpenEditorFiles();
+         MSESSION.variables   = retrieveAllVariables();
+      case 'session'
+         MSESSION.editorfiles = retrieveOpenEditorFiles();
+         MSESSION.variables   = retrieveAllVariables();
+      case 'variables'
+         MSESSION.variables   = retrieveAllVariables();
+      case 'files'
+         MSESSION.editorfiles = retrieveOpenEditorFiles();
+      case 'path'
+         MSESSION.path        = retrievePath();
+      otherwise 
+         error('Unknown selection: %s', selection)
+   end
+   showMessage('*** MSESSION store finished.\n')
+end
+
+
+
+
+
+function restorePath(MSESSION)
+   if isfield(MSESSION, 'path')
+      showMessage('Restoring path.')
+      path(MSESSION.path);
+      showMessage(' Done.\n')
+   else
+      showMessage('No path data found. Skipping.\n')
    end
 end
 
-function MSESSION = saveMSessionToVar(what)
-% saves specified things to MSESSION structure
-   switch lower(what)
-      case 'everything'
-         MSESSION.variables = getAllVariables();
-         MSESSION.editorfiles = getOpenEditorFiles();
-      case 'variables'
-         MSESSION.variables = getAllVariables();
-      case 'files'
-         MSESSION.editorfiles = getOpenEditorFiles();
-      otherwise 
-         error('Unknown selection: %s', what)
-   end
+function pathstr = retrievePath()
+   showMessage('Retrieving path.');
+   pathstr = path();
+   showMessage(' Done.\n');
 end
 
 
@@ -136,21 +200,30 @@ function document = openEditorFile(filespec)
 end
 
 function restoreEditorFiles(MSESSION)
-   editorfiles = MSESSION.editorfiles;
-   for k = 1:length(editorfiles)
-      document = openEditorFile(editorfiles(k).Filename);
-      document.Selection = editorfiles(k).Selection;
+   if isfield(MSESSION, 'editorfiles')
+      showMessage('Restoring open editor files.')
+      editorfiles = MSESSION.editorfiles;
+      for k = 1:length(editorfiles)
+         document = openEditorFile(editorfiles(k).Filename);
+         document.Selection = editorfiles(k).Selection;
+         showMessage('.')
+      end
+      showMessage(' Done.\n')
+   else
+      showMessage('No editor files data found. Skipping.\n')
    end
 end
 
 
 
 
-function editorfiles = getOpenEditorFiles()
+function editorfiles = retrieveOpenEditorFiles()
+   showMessage('Retrieving open editor files.')
    % list of all files (also unsaved!)
    docs = matlab.desktop.editor.getAll;  % document array
    % walk through files, save modified, and save unsaved to temporary
    for k = 1:length(docs)
+      showMessage('.')
       try
          % check if stored to file, if not, store to temporary
          if exist(docs(k).Filename, 'file')
@@ -166,33 +239,44 @@ function editorfiles = getOpenEditorFiles()
    % build result: store file names and selections
    editorfiles = cell2struct({docs.Filename ; docs.Selection}, ...
                              {   'Filename' , 'Selection'   });
+   showMessage(' Done.\n')
 end
 
 
 
 function restoreVariables(MSESSION)
-   % restore non-global base-only variables
-   for k = 1:length(MSESSION.variables.names.baseonly)
-      v = MSESSION.variables.names.baseonly{k};
-      restoreVariable(v, MSESSION.variables.content.baseonly.(v), 'baseonly');
+   if isfield(MSESSION, 'variables')
+      showMessage('Restoring variables.')
+      % restore non-global base-only variables
+      showMessage(' base.')
+      for k = 1:length(MSESSION.variables.names.baseonly)
+         showMessage('.')
+         v = MSESSION.variables.names.baseonly{k};
+         restoreVariable(v, MSESSION.variables.content.baseonly.(v), 'baseonly');
+      end
+      % restore global vars that are accessible from base
+      showMessage(' globals.')
+      for k = 1:length(MSESSION.variables.names.baseglobal)
+         showMessage('.')
+         v = MSESSION.variables.names.baseglobal{k};
+         restoreVariable(v, MSESSION.variables.content.baseglobal.(v), 'baseglobal');
+      end
+      % restore global vars that are inaccessible from base
+      for k = 1:length(MSESSION.variables.names.globalonly)
+         showMessage('.')
+         v = MSESSION.variables.names.globalonly{k};
+         restoreVariable(v, MSESSION.variables.content.globalonly.(v), 'globalonly');
+      end
+      showMessage(' Done.\n')
+   else
+      showMessage('No variables found. Skipping.\n')
    end
-   % restore global vars that are accessible from base
-   for k = 1:length(MSESSION.variables.names.baseglobal)
-      v = MSESSION.variables.names.baseglobal{k};
-      restoreVariable(v, MSESSION.variables.content.baseglobal.(v), 'baseglobal');
-   end
-   % restore global vars that are inaccessible from base
-   for k = 1:length(MSESSION.variables.names.globalonly)
-      v = MSESSION.variables.names.globalonly{k};
-      restoreVariable(v, MSESSION.variables.content.globalonly.(v), 'globalonly');
-   end
-
 end
 
 
 
 function restoreVariable(varname, content, target)
- %  try
+   try
       switch target
          case 'baseonly'  , restoreVar_baseonly(varname, content);
          case 'baseglobal', restoreVar_baseglobal(varname, content);
@@ -200,9 +284,9 @@ function restoreVariable(varname, content, target)
          otherwise
             error('Unknown target')  % should never be reached
       end
- %  catch ME
- %     fprintf('An error occured while restoring variable %s\n--ERROR: %s\n', varname, ME.message);
- %  end
+   catch ME
+      showError(ME, 'Error while restoring variable %s', varname);
+   end
 end
 
 
@@ -243,20 +327,28 @@ end
 
 
 
-function variables = getAllVariables()
-   variables.names = getAllVariableNames();                           % get names of variables
+function variables = retrieveAllVariables()
+   showMessage('Retrieving variables...\n');
+   showMessage('---');
+   variables.names = getAllVariableNames();   % get names of variables, structured by accesibility
+   showMessage('---base only       : ')
    variables.content.baseonly   = retrieveVariables(variables.names.baseonly);   % get the directly accessible variables
+   showMessage('---globals(base)   : ')
    variables.content.baseglobal = retrieveVariables(variables.names.baseglobal); % get the globals that are accessible from base
+   showMessage('---globals(nonbase): ')
    variables.content.globalonly = retrieveVariables(variables.names.globalonly); % get the globals that are inaccessible from base
+   showMessage('Done.\n')
 end
 
 
 function varnames = getAllVariableNames()
+   showMessage('Retrieving variable names.');
    varnames.base       = evalin('base', 'who()');
    varnames.global     = evalin('base', "who('global')");
    varnames.baseonly   = setdiff(varnames.base, varnames.global);
    varnames.globalonly = setdiff(varnames.global, varnames.base);
    varnames.baseglobal = intersect(varnames.base, varnames.global);
+   showMessage(' Done.\n');
 end
 
 
@@ -267,15 +359,23 @@ end
 
 function content = retrieveVariables(varnames)
 % returns the requested variables als field of content structure
-  varnames = ensureCell(varnames);
-  if isempty(varnames), content = []; return;  end
-  for k = 1:length(varnames)
-     v = varnames{k};
-     [content.(v), errorflag] = retrieveVariable(v);
-     if errorflag
-        fprintf('Error retrieving %s\n', v);
-     end
-  end
+   varnames = ensureCell(varnames);
+   if isempty(varnames)
+      content = []; 
+      showMessage('No variables present. Done.\n');
+      return;
+   else
+      showMessage('Retrieving variable contents.');
+      for k = 1:length(varnames)
+         showMessage('.');
+         v = varnames{k};
+         [content.(v), errorflag] = retrieveVariable(v);
+         if errorflag
+            showError([], 'Error retrieving %s', v);
+         end
+      end
+      showMessage(' Done.\n');
+   end
 end
   
 
@@ -290,6 +390,8 @@ function [content, errorflag] = retrieveVariable(varname)
       errorflag = true;
    end
 end
+
+
 
 
 
@@ -309,3 +411,5 @@ end
 
 
 
+% end of msession function
+end
