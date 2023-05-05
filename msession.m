@@ -138,7 +138,7 @@ function restore_MSESSION(MSESSION, selection)
          restoreVariables(MSESSION);
       case 'files'
          restoreEditorFiles(MSESSION)
-      case 'path'
+      case {'path','paths'}
          restorePath(MSESSION)
       otherwise
          error('MSESSION:unknownSelection', 'Unknown selection: %s', selection);
