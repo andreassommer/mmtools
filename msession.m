@@ -295,14 +295,6 @@ function varcontent = getVarFromBase(varname)
    varcontent = evalin('base', varname);
 end
 
-% prefix MSESSION__ avoids clashing with variable names in global context
-function MSESSION__MSESSION = getVarFromGlobal(MSESSION__varname)
-   MSESSION__cmd = sprintf('global %s', MSESSION__varname);  % make accessible
-   eval(MSESSION__cmd);
-   MSESSION__MSESSION   = eval(MSESSION__varname);                  % retrieve content
-   MSESSION__cmd = sprintf('clear %s', MSESSION__varname);   % make unaccessible again
-   eval(MSESSION__cmd);
-end
 
 function restoreVar_baseonly(varname, content)
    assignin('base', varname, content);
@@ -412,4 +404,17 @@ end
 
 
 % end of msession function
+end
+
+
+
+
+% MUST NOT BE A NESTED FUNCTION !  (cannot add variables to static workspace!)
+% prefix MSESSION__ avoids clashing with variable names in global context
+function MSESSION__MSESSION = getVarFromGlobal(MSESSION__varname)
+   MSESSION__cmd = sprintf('global %s', MSESSION__varname);  % make accessible
+   eval(MSESSION__cmd);
+   MSESSION__MSESSION   = eval(MSESSION__varname);                  % retrieve content
+   MSESSION__cmd = sprintf('clear %s', MSESSION__varname);   % make unaccessible again
+   eval(MSESSION__cmd);
 end
