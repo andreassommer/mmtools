@@ -233,7 +233,9 @@ function editorfiles = retrieveOpenEditorFiles()
             docs(k).saveAs(tmpfilename);
          end
       catch
-         error('Error while handling editor file %s. Skipping.', docs(k).Filename)
+         fprintf('\n')
+         warning('Error while handling editor file %s. Skipping.', docs(k).Filename)
+         fprintf('SKIPPED: %s\n.', docs(k).Filename);
       end
    end
    % build result: store file names and selections
