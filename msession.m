@@ -234,8 +234,7 @@ function editorfiles = retrieveOpenEditorFiles()
          end
       catch
          fprintf('\n')
-         warning('Error while handling editor file %s. Skipping.', docs(k).Filename)
-         fprintf('SKIPPED: %s\n.', docs(k).Filename);
+         warning('Could not save editor file %s.', docs(k).Filename)
       end
    end
    % build result: store file names and selections
@@ -308,16 +307,6 @@ function restoreVar_baseglobal(varname, content)
    assignin('base', varname, content);
 end
 
-% prefix MSESSION__ avoids clashing with variable names in global context
-function restoreVar_globalonly(MSESSION__varname, MSESSION__content)
-   MSESSION__cmd = sprintf('global %s', MSESSION__varname);  % make accessible
-   [~] = evalc(MSESSION__cmd);                               % ignore evaluation output
-   MSESSION__contentprovider = @() MSESSION__content;        %#ok - it is used in eval
-   MSESSION__cmd = sprintf('%s = MSESSION__contentprovider();', MSESSION__varname);
-   eval(MSESSION__cmd);                                      % transfer content
-   MSESSION__cmd = sprintf('clear %s', MSESSION__varname);   % make unaccessible again
-   eval(MSESSION__cmd);
-end
 
 
 
@@ -419,4 +408,23 @@ function MSESSION__MSESSION = getVarFromGlobal(MSESSION__varname)
    MSESSION__MSESSION   = eval(MSESSION__varname);                  % retrieve content
    MSESSION__cmd = sprintf('clear %s', MSESSION__varname);   % make unaccessible again
    eval(MSESSION__cmd);
+end
+
+
+% MUST NOT BE A NESTED FUNCTION !  (cannot add variables to static workspace! MATLAB:err_static_workspace_violation)
+% prefix MSESSION__ avoids clashing with variable names in global context
+function restoreVar_globalonly(MSESSION__varname, MSESSION__content)
+   % If there is a base variable of same name, first rename it
+   MSESSION__cmd = sprintf('global %s', MSESSION__varname);  % make accessible
+   [~] = evalc(MSESSION__cmd);                               % ignore evaluation output
+   MSESSION__contentprovider = @() MSESSION__content;        %#ok - it is used in eval
+   MSESSION__cmd = sprintf('%s = MSESSION__contentprovider();', MSESSION__varname);
+   eval(MSESSION__cmd);                                      % transfer content
+   MSESSION__cmd = sprintf('clear %s', MSESSION__varname);   % make unaccessible again
+   eval(MSESSION__cmd);
+end
+
+function isglob = isglobalvar(varname)
+   globalvars = who('global');
+   isglob = ismember(varname, globalvars);
 end
