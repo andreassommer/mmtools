@@ -4,7 +4,7 @@ function z = hornereval2D(p,x,y)
 % INPUT:  p --> matrix of polynomial coefficients
 % 
 %         x --> x values to evaluate (scalar or vector)
-%         x --> y values to evaluate (same size as x)
+%         y --> y values to evaluate (same size as x)
 % 
 % OUTPUT: z --> evaluated 2D polynomial
 %               z = sum_(i=0)^(nx) sum_(j=0)^(ny)  p(i,j) * x^i * y^j
@@ -55,7 +55,7 @@ else
       ki = zeros(npoints, 1);
       ki(:) = p(i,1);
       for j = 2:npy
-         ki = y .* ki + p(i,j);
+         ki = y(:) .* ki + p(i,j);
       end
       k(i,:) = ki;
    end
