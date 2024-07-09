@@ -1,5 +1,5 @@
-function clearedOptions = removeOption(optionlist, varargin)
-   % clearedOptions = removeOption(optionlist, name1, name2, ...)
+function clearedOptions = olRemoveOption(optionlist, varargin)
+   % clearedOptions = olRemoveOption(optionlist, name1, name2, ...)
    %
    % Removes specified properties/options (and the associated value) from optionlist.
    %
@@ -7,12 +7,14 @@ function clearedOptions = removeOption(optionlist, varargin)
    %                nameN --> keys to be removed
    % OUPUT: cleardoptions --> processed optionlist
    %
-   % Author: Andreas Sommer, Sep2016
+   % Author: Andreas Sommer, Sep2016, Jul2024
    % andreas.sommer@iwr.uni-heidelberg.de
    % code@andreas-sommer.eu
    %
    %
-   % Mar2021: Renamed from removeOptions to removeOption to unify naming
+   % History:  
+   %      Mar2021: Renamed from removeOptions to removeOption to unify naming
+   %      Jul2024 --> renamed to ol* scheme
    
    % if no options are to be deleted, just return the given optionlist 
    if (nargin==1)
@@ -21,10 +23,10 @@ function clearedOptions = removeOption(optionlist, varargin)
    end
 
    % ensure optionlist is a valid optionlist
-   assertOptionlist(optionlist);
+   olAssertOptionlist(optionlist);
    
    % assert that varargin is a cell array of strings
-   if ~iscellstr(varargin)
+   if ~iscellstr(varargin)        %#ok<ISCLSTR>  % really check for *cell* string
       disp('Problem detected:')
       disp(varargin)
       error('Invalid key list!')

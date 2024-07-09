@@ -1,7 +1,7 @@
-function [answer, problem] = isOptionlist(object)
-   % [answer, problem] = isOptionlist(optionlist)
+function [answer, problem] = olIsOptionlist(object)
+   % [answer, problem] = olIsOptionlist(optionlist)
    %
-   % Checksif object is a valid optionlist, i.e. consists of key-value-pairs.
+   % Checks if object is a valid optionlist, i.e. consists of key-value-pairs.
    %
    % INPUT:    object --> object to be checked
    %
@@ -9,9 +9,11 @@ function [answer, problem] = isOptionlist(object)
    %          problem --> string telling which test failed
    %
    %
-   % Author:  Andreas Sommer, 2016
+   % Author:  Andreas Sommer, 2016, 2024
    % andreas.sommer@iwr.uni-heidelberg.de
    % code@andreas-sommer.eu
+   %
+   % History:     Jul2024 --> renamed to ol* scheme
 
 
    % Init
@@ -19,13 +21,17 @@ function [answer, problem] = isOptionlist(object)
    
    % ensure object is a cell array
    if ~(iscell(object))
-      problem = sprintf('Object is not an optionlist, but a %s.', class(object));
+      if (nargout > 1)
+         problem = sprintf('Object is not an optionlist, but a %s.', class(object));
+      end
       return
    end
    
    % ensure length of object is even
    if ~(mod(length(object),2)==0)
-      problem = sprintf('Invalid length of %d detected, but must be even!', length(object));
+      if (nargout > 1)
+         problem = sprintf('Invalid length of %d detected, but must be even!', length(object));
+      end
       return
    end
    
@@ -33,9 +39,11 @@ function [answer, problem] = isOptionlist(object)
    for k = 1:2:length(object)
       key = object{k};
       if ~ischar(key)
-         problem = sprintf('Element #%d is not a string, but a %s.', k, class(key));
+         if (nargout > 1)
+            problem = sprintf('Element #%d is not a string, but a %s.', k, class(key));
+         end
          return
-      end;
+      end
    end
    
    % all tests passed, so it seems to be an optionlist

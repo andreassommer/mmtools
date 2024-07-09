@@ -1,6 +1,6 @@
-function [value, cellarray] = getOption(cellarray, searchOption, defaultValue)
-   % function [value, cellarray] = getOption(cellarray, searchOption)
-   % function [value, cellarray] = getOption(cellarray, searchOption, defaultValue)
+function [value, cellarray] = olGetOption(cellarray, searchOption, defaultValue)
+   % function [value, cellarray] = olGetOption(cellarray, searchOption)
+   % function [value, cellarray] = olGetOption(cellarray, searchOption, defaultValue)
    %
    % Searches cellarray, that is expected to be a cell array
    % of name/value pairs, for specified option and returns
@@ -32,13 +32,14 @@ function [value, cellarray] = getOption(cellarray, searchOption, defaultValue)
    % History:  Sep2016 --> renamed to getOption, assert optionlist
    %           Mar2017 --> cut the cell array, if two-arg-output
    %           Dec2022 --> add default value 
+   %           Jul2024 --> renamed to olGetOption
    
    % was a default value provided?
    if (nargin<3), defaultValue = []; end
    
    % Initialize
    value = defaultValue;
-   assertOptionlist(cellarray);
+   olAssertOptionlist(cellarray);
    
    % cycle through properties
    for k = 1:2:length(cellarray)
@@ -53,6 +54,6 @@ function [value, cellarray] = getOption(cellarray, searchOption, defaultValue)
    
    % if more than one output argument, remove the queried option
    if (nargout >= 2)
-      cellarray = removeOptions(cellarray, optionName);
+      cellarray = olRemoveOptions(cellarray, optionName);
    end
 end
