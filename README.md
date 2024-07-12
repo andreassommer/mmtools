@@ -1,53 +1,85 @@
 # mmtools - Miscellaneous Matlab Tools
 
-(c) Andreas Sommer, 2016
+(c) Andreas Sommer, 2010-2024
     code@andreas-sommer.eu
 
 
-# roundto
+# List of Tools
 
-Rounds values to the nearest divisor value.
-See roundto_example.m for an example.
+Tools marked with ⭐ might be especially worth a look.
+
+* [ADLER32](#ADLER32) - Compute Adler32 hash
+* [hornereval](#hornereval) - Evaluate 1d polynomial using Horner's scheme
+* [hornereval2D](#hornereval2D) - Evaluate 2d polynomial using Horner's scheme
+* [integrate_with_restarts⭐](#integrate_with_restarts⭐) - Integrade implicitly switched ODE with state jumps
+* [isfigure](#isfigure) - Check if variable is handle to a figure
+* [istext](#istext) - Check if variable is a char array or a string
+* [makeClosure](/makeClosure) - Mimick pass-by-reference via closure
+* [msession⭐](#msession⭐) - Store and retrieve Matlab sessions (open files, work space variables, etc.)
+* [optionlists⭐](#optionlists⭐) - Handle name-value pairs
+* [roundto](#roundto) - Rounds values to nearest divisor value
+* [sviz](#sviz) - Simple visualizer
 
 
 
-# ADLER32
 
-Commputes the Adler32 hash of a given char array.
+---
+---
+
+
+## ADLER32
+
+Computes the Adler32 hash of a given char array.
+
+[Return to list of tools](#list-of-tools)
 
 
 
-# hornereval, hornereval2D
+
+## hornereval, hornereval2D
 
 Evaluation of 1d and 2d polynomials using Horner's scheme.
 
+[Return to list of tools](#list-of-tools)
 
 
-# isfigure
+
+
+## integrate_with_restarts⭐
+
+A Matlab tool for integration of switched ODEs, with implicit (state-dependent) model and state changes.  
+Only integration is supported.  
+The tool [*IFDIFF*](https://andreassommer.github.io/ifdiff/) is much more sophisticated. 
+It generates switching functions automatically from existing code with IF statements and can also compute forward sensitivities.
+
+
+
+
+## isfigure
 
 Queries if specified handle refers to a (valid) figure.
 
 
 
-# istext
+## istext
 
 Checks if specified object is a char array or a string
 
+[Return to list of tools](#list-of-tools)
 
 
-# makeClosure
+
+
+## makeClosure
 
 Generates a closure to mimick pass-by-reference style of programming.
 
-
-
-# svis
-
-Simple viszalization tool.
+[Return to list of tools](#list-of-tools)
 
 
 
-# msession
+
+# msession⭐
 
 Stores a whole Matlab work session in a file, and restores it upon request.
 The user can select what to be stored:
@@ -55,23 +87,26 @@ The user can select what to be stored:
   - main work space variables
   - global variables
 
+[Return to list of tools](#list-of-tools)
 
 
-# optionlists
 
-Matlab tools for handling name-value pairs in function calls:
+
+# optionlists⭐
+
+Matlab tools for handling name-value pairs, especially in function calls.
   - querying arguments by name:     `olGetOption`
   - checking for present arguments: `olHasOption`
   - generation of option lists:     `olSetOption`
   - removing from option lists:     `olRemoveOption`
   - checking validity:              `olIsOptionlist`, `olAssertOptionlist` 
 
-## Documentation
+### Documentation
 
-Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`, e.g. `help getOption`.
+Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`.  
+See, e.g., `help olGetOption`.
 
-
-## Example
+### Example
 
 Call: 
 ```matlab 
@@ -98,3 +133,27 @@ function val = f(a,b,varargin)
     % ...
 end    
 ``` 
+
+[Return to list of tools](#list-of-tools)
+
+
+
+
+## roundto
+
+Rounds values to the nearest divisor value.
+See roundto_example.m for an example.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+
+# svis
+
+Simple viszalization tool.
+
+[Return to list of tools](#list-of-tools)
+
+
+
