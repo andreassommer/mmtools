@@ -1,12 +1,14 @@
 # mmtools - Miscellaneous Matlab Tools
 
-(c) Andreas Sommer, 2010-2024
-    code@andreas-sommer.eu
+A collection of free and open source Matlab tools.
+
+(c) Andreas Sommer, 2010-2024  
+E-Mail: code@andreas-sommer.eu
 
 
 # List of Tools
 
-Tools marked with ⭐ might be especially worth a look.
+Tools marked with ⭐ might be especially worth a look.  
 
 * [ADLER32](#ADLER32) - Compute Adler32 hash
 * [hornereval](#hornereval) - Evaluate 1d polynomial using Horner's scheme
@@ -20,6 +22,7 @@ Tools marked with ⭐ might be especially worth a look.
 * [roundto](#roundto) - Rounds values to nearest divisor value
 * [sviz](#sviz) - Simple visualizer
 
+Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`.  
 
 
 
@@ -103,8 +106,7 @@ Matlab tools for handling name-value pairs, especially in function calls.
 
 ### Documentation
 
-Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`.  
-See, e.g., `help olGetOption`.
+For details, see, `help olGetOption`.
 
 ### Example
 
