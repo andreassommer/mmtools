@@ -13,12 +13,12 @@ Tools marked with ⭐ might be especially worth a look.
 * [ADLER32](#ADLER32) - Compute Adler32 hash
 * [hornereval](#hornereval) - Evaluate 1d polynomial using Horner's scheme
 * [hornereval2D](#hornereval2D) - Evaluate 2d polynomial using Horner's scheme
-* [integrate_with_restarts⭐](#integrate_with_restarts⭐) - Integrade implicitly switched ODE with state jumps
+* [integrate_with_restarts⭐](#integrate_with_restarts) - Integrade implicitly switched ODE with state jumps
 * [isfigure](#isfigure) - Check if variable is handle to a figure
 * [istext](#istext) - Check if variable is a char array or a string
 * [makeClosure](/makeClosure) - Mimick pass-by-reference via closure
-* [msession⭐](#msession⭐) - Store and retrieve Matlab sessions (open files, work space variables, etc.)
-* [optionlists⭐](#optionlists⭐) - Handle name-value pairs
+* [msession⭐](#msession) - Store and retrieve Matlab sessions (open files, work space variables, etc.)
+* [optionlists⭐](#optionlists) - Handle name-value pairs
 * [roundto](#roundto) - Rounds values to nearest divisor value
 * [sviz](#sviz) - Simple visualizer
 
@@ -30,6 +30,8 @@ Documentation is provided inside the code and thus available using Matlab's help
 ---
 
 
+
+<a name="ADLER32"></a>
 ## ADLER32
 
 Computes the Adler32 hash of a given char array.
@@ -39,6 +41,8 @@ Computes the Adler32 hash of a given char array.
 
 
 
+<a name="hornereval"></a>
+<a name="hornereval2D"></a>
 ## hornereval, hornereval2D
 
 Evaluation of 1d and 2d polynomials using Horner's scheme.
@@ -48,6 +52,7 @@ Evaluation of 1d and 2d polynomials using Horner's scheme.
 
 
 
+<a name="integrate_with_restarts"></a>
 ## integrate_with_restarts⭐
 
 A Matlab tool for integration of switched ODEs, with implicit (state-dependent) model and state changes.  
@@ -55,15 +60,22 @@ Only integration is supported.
 The tool [*IFDIFF*](https://andreassommer.github.io/ifdiff/) is much more sophisticated. 
 It generates switching functions automatically from existing code with IF statements and can also compute forward sensitivities.
 
+[Return to list of tools](#list-of-tools)
 
 
 
+
+<a name="isfigure"></a>
 ## isfigure
 
 Queries if specified handle refers to a (valid) figure.
 
+[Return to list of tools](#list-of-tools)
 
 
+
+
+<a name="istext"></a>
 ## istext
 
 Checks if specified object is a char array or a string
@@ -72,7 +84,7 @@ Checks if specified object is a char array or a string
 
 
 
-
+<a name="makeClosure"></a>
 ## makeClosure
 
 Generates a closure to mimick pass-by-reference style of programming.
@@ -82,6 +94,7 @@ Generates a closure to mimick pass-by-reference style of programming.
 
 
 
+<a name="msession"></a>
 # msession⭐
 
 Stores a whole Matlab work session in a file, and restores it upon request.
@@ -95,6 +108,7 @@ The user can select what to be stored:
 
 
 
+<a name="optionlists"></a>
 # optionlists⭐
 
 Matlab tools for handling name-value pairs, especially in function calls.
@@ -141,6 +155,7 @@ end
 
 
 
+<a name="roundto"></a>
 ## roundto
 
 Rounds values to the nearest divisor value.
@@ -151,7 +166,8 @@ See roundto_example.m for an example.
 
 
 
-# svis
+<a name="sviz"></a>
+# sviz
 
 Simple viszalization tool.
 
