@@ -22,6 +22,7 @@ Tools marked with ⭐ might be especially worth a look.
 * [optionlists⭐](#optionlists) - Handle name-value pairs                                [[->code]](/optionlists.m)
 * [roundto](#roundto)           - Rounds values to nearest divisor value                 [[->code]](/roundto.m)
 * [sviz](#sviz)                 - Simple visualizer                                      [[->code]](/sviz.m)
+* [whichToolboxFor](#whichToolboxFor) - Investigate toolbox dependency of code           [[->code]](/whichToolboxFor.m)
 
 Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`.
 
@@ -195,3 +196,12 @@ Simple viszalization tool.
 
 
 
+
+<a id="whichToolboxFor"></a>
+## whichToolboxFor   [[see code]](/whichToolboxFor.m)
+
+Retrieves the required Matlab Toolboxes for specified mfile.
+Also inspects all files invoked by mfile and checks their dependency.
+Additionaly prints for every used toolbox the list of files that actually require them.
+
+[Return to list of tools](#list-of-tools)
