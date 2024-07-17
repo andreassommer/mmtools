@@ -30,7 +30,7 @@ filecount = length(fList);
 fprintf('Done.\n')
 
 % for every file, get the direct dependencies
-fprintf('Retrieving dependencies of %d called files', filecount);
+fprintf('Retrieving dependencies of %d called files.', filecount);
 fl = cell(filecount, 1);
 pl = cell(filecount, 1);
 for i=1:filecount
