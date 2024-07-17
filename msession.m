@@ -33,6 +33,14 @@ function varargout = msession(command, filename, selection, silent)
 % code@andreas-sommer.eu
 
 
+% display help if invoked with no input
+if (nargin == 0)
+   help(mfilename());
+   disp('MSESSION: No arguments provided.');
+   return
+end
+
+
 % little error check
 if ~(ischar(command) || isstring(command))
    error('First argument (command) must be a character array or a string.')
