@@ -2,9 +2,13 @@
 
 A collection of free and open source Matlab tools.
 
-(c) Andreas Sommer, 2010-2024  
+Andreas Sommer, 2010-2024  
 E-Mail: code@andreas-sommer.eu
 
+&nbsp;
+
+### **IMPORTANT**:  Mathworks File Exchange renders Github links in a wrong way (August 2024).  
+[**--> Open this README on Github <--**](https://github.com/andreassommer/mmtools/README.md)  
 
 # List of Tools
 
