@@ -19,7 +19,7 @@ Tools marked with ⭐ might be especially worth a look.
 * [istext](#istext)             - Check if variable is a char array or a string          [[->code]](/istext.m)
 * [makeClosure](#makeClosure)   - Mimick pass-by-reference via closure                   [[->code]](/makeClosure.m)
 * [msession⭐](#msession)       - Store and retrieve Matlab sessions (open files, work space variables, etc.) [[->code]](/msession.m)
-* [optionlists⭐](#optionlists) - Handle name-value pairs                                [[->code]](/optionlists.m)
+* [optionlists⭐](#optionlists) - Handle name-value pairs                                [[->code]](/olGetOption.m)
 * [roundto](#roundto)           - Rounds values to nearest divisor value                 [[->code]](/roundto.m)
 * [sviz](#sviz)                 - Simple visualizer                                      [[->code]](/sviz.m)
 * [whichToolboxFor](#whichToolboxFor) - Investigate toolbox dependency of code           [[->code]](/whichToolboxFor.m)
@@ -130,7 +130,7 @@ The user can select what to be stored:
 
 
 <a id="optionlists"></a>
-# optionlists⭐   [[see code]](/optionlists.m)
+# optionlists⭐   [[see code]](/olGetOption.m)
 
 Matlab tools for handling name-value pairs, especially in function calls.
   - querying arguments by name:     `olGetOption`
