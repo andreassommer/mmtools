@@ -33,6 +33,7 @@ Documentation is provided inside the code and thus available using Matlab's help
 
 
 
+<a name="adler32"></a>
 <a id="adler32"></a>
 ## ADLER32   [[see code]](/ADLER32.m)
 
@@ -42,7 +43,7 @@ Computes the Adler32 hash of a given char array.
 
 
 
-
+<a name="execWSL"></a>
 <a id="execWSL"></a>
 ## execWSL   [[see code]](/execWSL.m)
 
@@ -53,7 +54,7 @@ Distribution can be chosen. Dryrun and echoing supported.
 
 
 
-
+<a name="hornereval"></a>
 <a id="hornereval"></a>
 ## hornereval   [[see code]](/hornereval.m)
 
@@ -62,7 +63,7 @@ Evaluation of 1d polynomials using Horner's scheme.
 [Return to list of tools](#list-of-tools)
 
 
-
+<a name="hornereval2D"></a>
 <a id="hornereval2D"></a>
 ## hornereval2D   [[see code]](/hornereval2D.m)
 
@@ -72,7 +73,7 @@ Evaluation of 2d polynomials using Horner's scheme.
 
 
 
-
+<a name="integrate_with_restarts"></a>
 <a id="integrate_with_restarts"></a>
 ## integrate_with_restarts⭐   [[see code]](/integrate_with_restarts.m)
 
@@ -85,7 +86,7 @@ It generates switching functions automatically from existing code with IF statem
 
 
 
-
+<a name="isfigure"></a>
 <a id="isfigure"></a>
 ## isfigure   [[see code]](/isfigure.m)
 
@@ -95,7 +96,7 @@ Queries if specified handle refers to a (valid) figure.
 
 
 
-
+<a name="istext"></a>
 <a id="istext"></a>
 ## istext   [[see code]](/istext.m)
 
@@ -105,6 +106,7 @@ Checks if specified object is a char array or a string
 
 
 
+<a name="makeClosure"></a>
 <a id="makeClosure"></a>
 ## makeClosure   [[see code]](/makeClosure.m)
 
@@ -115,6 +117,7 @@ Generates a closure to mimick pass-by-reference style of programming.
 
 
 
+<a name="msession"></a>
 <a id="msession"></a>
 # msession⭐   [[see code]](/msession.m)
 
@@ -130,6 +133,7 @@ The user can select what to be stored:
 
 
 <a id="optionlists"></a>
+<a name="optionlists"></a>
 # optionlists⭐   [[see code]](/olGetOption.m)
 
 Matlab tools for handling name-value pairs, especially in function calls.
@@ -177,6 +181,7 @@ end
 
 
 <a id="roundto"></a>
+<a name="roundto"></a>
 ## roundto   [[see code]](/roundto.m)
 
 Rounds values to the nearest divisor value.
@@ -187,6 +192,7 @@ See roundto_example.m for an example.
 
 
 
+<a name="sviz"></a>
 <a id="sviz"></a>
 # sviz   [[see code]](/sviz.m)
 
@@ -197,6 +203,7 @@ Simple viszalization tool.
 
 
 
+<a name="whichToolboxFor"></a>
 <a id="whichToolboxFor"></a>
 ## whichToolboxFor   [[see code]](/whichToolboxFor.m)
 
