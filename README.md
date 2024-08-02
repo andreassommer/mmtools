@@ -8,7 +8,7 @@ E-Mail: code@andreas-sommer.eu
 &nbsp;
 
 ### **IMPORTANT**:  Mathworks File Exchange renders Github links in a wrong way (August 2024).  
-[**--> Open this README on Github <--**](https://github.com/andreassommer/mmtools/blob/main/README.md)  
+[**--> Open this README on Github <--**](https://github.com/andreassommer/mmtools/?tab=readme-ov-file#readme)  
 
 
 
