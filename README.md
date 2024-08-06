@@ -18,12 +18,14 @@ Tools marked with ⭐ might be especially worth a look.
 
 * [ADLER32](#adler32)           - Compute Adler32 hash                                   [[->code]](/ADLER32.m)
 * [execWSL](#execWSL)           - Execute command in WSL (Windows Subsystem for Linux)   [[->code]](/execWSL.m)
+* [getCaller](#getCaller)       - Retrieve calling function, file, line number           [[->code]](/getCaller.m)
 * [hornereval](#hornereval)     - Evaluate 1d polynomial using Horner's scheme           [[->code]](/hornereval.m)
 * [hornereval2D](#hornereval2D) - Evaluate 2d polynomial using Horner's scheme           [[->code]](/hornereval2D.m)
 * [integrate_with_restarts⭐](#integrate_with_restarts) - Integrade implicitly switched ODE with state jumps [[->code]](/integrate_with_restarts.m)
 * [isfigure](#isfigure)         - Check if variable is handle to a figure                [[->code]](/isfigure.m)
 * [istext](#istext)             - Check if variable is a char array or a string          [[->code]](/istext.m)
 * [makeClosure](#makeClosure)   - Mimick pass-by-reference via closure                   [[->code]](/makeClosure.m)
+* [makeMessage](#makeMessage)   - Message generating with preponed Caller                [[->code]](/makeMessage.m)
 * [msession⭐](#msession)       - Store and retrieve Matlab sessions (open files, work space variables, etc.) [[->code]](/msession.m)
 * [optionlists⭐](#optionlists) - Handle name-value pairs                                [[->code]](/olGetOption.m)
 * [roundto](#roundto)           - Rounds values to nearest divisor value                 [[->code]](/roundto.m)
@@ -69,11 +71,23 @@ Evaluation of 1d polynomials using Horner's scheme.
 [Return to list of tools](#list-of-tools)
 
 
+
 <a name="hornereval2D"></a>
 <a id="hornereval2D"></a>
 ## hornereval2D   [[see code]](/hornereval2D.m)
 
 Evaluation of 2d polynomials using Horner's scheme.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+<a name="getCaller"></a>
+<a id="getCaller"></a>
+## getCaller   [[see code]](/getCaller.m)
+
+Retrieve calling function, optionally with file name and line number.
+Relies on Matlab's dbstack.
 
 [Return to list of tools](#list-of-tools)
 
@@ -120,6 +134,17 @@ Generates a closure to mimick pass-by-reference style of programming.
 
 [Return to list of tools](#list-of-tools)
 
+
+
+<a name="makeMessage"></a>
+<a id="makeMessage"></a>
+## makeMessage   [[see code]](/makeMessage.m)
+
+Display or generate message and prepone the calling function. 
+makeMessage is a wrapper around Matlab's *printf functions, but accepts also other
+printer functions that follow the sprintf or fprintf API.
+
+[Return to list of tools](#list-of-tools)
 
 
 
