@@ -16,21 +16,22 @@ E-Mail: code@andreas-sommer.eu
 
 Tools marked with ⭐ might be especially worth a look.  
 
-* [ADLER32](#adler32)           - Compute Adler32 hash                                   [[->code]](/ADLER32.m)
-* [execWSL](#execWSL)           - Execute command in WSL (Windows Subsystem for Linux)   [[->code]](/execWSL.m)
-* [getCaller](#getCaller)       - Retrieve calling function, file, line number           [[->code]](/getCaller.m)
-* [hornereval](#hornereval)     - Evaluate 1d polynomial using Horner's scheme           [[->code]](/hornereval.m)
-* [hornereval2D](#hornereval2D) - Evaluate 2d polynomial using Horner's scheme           [[->code]](/hornereval2D.m)
+* [ADLER32](#adler32)           - Compute Adler32 hash                                    [[->code]](/ADLER32.m)
+* [execWSL](#execWSL)           - Execute command in WSL (Windows Subsystem for Linux)    [[->code]](/execWSL.m)
+* [getCaller](#getCaller)       - Retrieve calling function, file, line number            [[->code]](/getCaller.m)
+* [getWorkspaceVariable](#getWorkspaceVariable)  - Retrieve variable from other workspace [[->code]](/getWorkspaceVariable.m)
+* [hornereval](#hornereval)     - Evaluate 1d polynomial using Horner's scheme            [[->code]](/hornereval.m)
+* [hornereval2D](#hornereval2D) - Evaluate 2d polynomial using Horner's scheme            [[->code]](/hornereval2D.m)
 * [integrate_with_restarts⭐](#integrate_with_restarts) - Integrade implicitly switched ODE with state jumps [[->code]](/integrate_with_restarts.m)
-* [isfigure](#isfigure)         - Check if variable is handle to a figure                [[->code]](/isfigure.m)
-* [istext](#istext)             - Check if variable is a char array or a string          [[->code]](/istext.m)
-* [makeClosure](#makeClosure)   - Mimick pass-by-reference via closure                   [[->code]](/makeClosure.m)
-* [makeMessage](#makeMessage)   - Message generating with preponed Caller                [[->code]](/makeMessage.m)
+* [isfigure](#isfigure)         - Check if variable is handle to a figure                 [[->code]](/isfigure.m)
+* [istext](#istext)             - Check if variable is a char array or a string           [[->code]](/istext.m)
+* [makeClosure](#makeClosure)   - Mimick pass-by-reference via closure                    [[->code]](/makeClosure.m)
+* [makeMessage](#makeMessage)   - Message generating with preponed Caller                 [[->code]](/makeMessage.m)
 * [msession⭐](#msession)       - Store and retrieve Matlab sessions (open files, work space variables, etc.) [[->code]](/msession.m)
-* [optionlists⭐](#optionlists) - Handle name-value pairs                                [[->code]](/olGetOption.m)
-* [roundto](#roundto)           - Rounds values to nearest divisor value                 [[->code]](/roundto.m)
-* [sviz](#sviz)                 - Simple visualizer                                      [[->code]](/sviz.m)
-* [whichToolboxFor](#whichToolboxFor) - Investigate toolbox dependency of code           [[->code]](/whichToolboxFor.m)
+* [optionlists⭐](#optionlists) - Handle name-value pairs                                 [[->code]](/olGetOption.m)
+* [roundto](#roundto)           - Rounds values to nearest divisor value                  [[->code]](/roundto.m)
+* [sviz](#sviz)                 - Simple visualizer                                       [[->code]](/sviz.m)
+* [whichToolboxFor](#whichToolboxFor) - Investigate toolbox dependency of code            [[->code]](/whichToolboxFor.m)
 
 Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`.
 
@@ -88,6 +89,16 @@ Evaluation of 2d polynomials using Horner's scheme.
 
 Retrieve calling function, optionally with file name and line number.
 Relies on Matlab's dbstack.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+<a name="getWorkspaceVariable"></a>
+<a id="getWorkspaceVariable"></a>
+## getWorkspaceVariable   [[see code]](/getWorkspaceVariable.m)
+
+Retrieve a variable from other workspace (base or caller), with optional not-found value and error signaling capability.
 
 [Return to list of tools](#list-of-tools)
 
