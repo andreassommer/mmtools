@@ -7,7 +7,7 @@ function [status, cmdout] = execWSL(wslcommand, comment)
 % Before execution, the comment and the command is displayed (if not too long).
 % Displays output if successful or halts with warning on failure.
 %
-% NOTE: Escaping of &, ;, >, < is automatically done!
+% NOTE: Escaping of & ; > < | is automatically done!
 %
 % INPUT:    wslcommand --> command to be executed in WSL
 %              comment --> comment to be displayed before executing if verbosity is enabled
@@ -21,21 +21,29 @@ function [status, cmdout] = execWSL(wslcommand, comment)
 % Internal commands:
 %      #setdistro     --> set the wsl distro to be used ('' for default)
 %                         Example:  execWSL('#setdistro', 'Debian')
+%      #getdistro     --> retrieves currently selected distro (empty means default distro)
+%                         Example:  currentdistro = execWSL('#getdistro')
 %      #verbose       --> enable/disable verbosity mode
 %                         Example:  execWSL('#verbose', true);
 %      #dryrun        --> enable/disable dryrun mode
 %                         If set to true, WSL command will be displayed but not executed.
 %                         Always returns with status 0 and empty cmdout.
-%      #shutdown      --> Invokes shutdown request for the distribution specified 
-%                         Example:  execWSL('#shutdown', 'Debian')
+%                         Example:  execWSL('#dryrun', true);
+%      #shutdown      --> Invokes shutdown request for WSL, terminating all distributions and WSL itself
+%                         Example:  execWSL('#shutdown')
+%      #terminate     --> Invokes terminate request for the specified distribution
+%                         Example:  execWSL('#terminate', 'Debian')
 %      #haltonerror   --> Invokes the debugger if WSL call fails (default: true)
 %      #showinternals --> Lists internal variables and their content
+%      #raw           --> Invokes verbatim command in iarg with wsl
+%      #silentmode    --> Enable/disable silent mode (screen output)
+%                         Example:  execWSL('#silentmode', true);
 %
 % Andreas Sommer, Jul2024
 % code@andreas-sommer.eu
 %
 
-persistent WSLdistro verbose haltOnError dryrun
+persistent WSLdistro verbose haltOnError dryrun silentmode
 
 % init persistent variables
 if isempty(verbose)    ,     verbose = true ; end
@@ -63,16 +71,24 @@ if ( wslcommand(1)=='#' )
          dryrun = iarg;
       case {'haldonerror','keyboardonerror'}
          haltOnError = iarg;
+      case 'silentmode'
+         silentmode = iarg;
       case 'showinternals'
          fprintf('%s persistent variables:\n', mfilename())
          fprintf('- WSLdistro: %s\n', WSLdistro);
          fprintf('- verbose        :   %s\n', tf_to_string(verbose));
          fprintf('- dryrun         :   %s\n', tf_to_string(dryrun));
          fprintf('- keyboardOnError:   %s\n', tf_to_string(haltOnError));
+      case 'terminate'
+         distro = comment; 
+         if isempty(distro), distro = WSLdistro; end
+         shutdownCommand = sprintf('--terminate %s', distro);
+         [status, cmdout] = raw_WSL_call(shutdownCommand);      
       case 'shutdown'
          shutdownCommand = sprintf('--shutdown ');
-         shutdownCommand = add_distro_option(shutdownCommand, WSLdistro);
-         raw_WSL_call(shutdownCommand)         
+         [status, cmdout] = raw_WSL_call(shutdownCommand);
+      case 'raw'
+         [status, cmdout] = raw_WSL_call(comment);
       otherwise
          error('%s: Unknown internal command!', mfilename());
    end
@@ -80,7 +96,7 @@ if ( wslcommand(1)=='#' )
 end
 
 % pre-execution output
-if ~isempty(comment)
+if ~isempty(comment) && ~silentmode
    disp(comment)
 end
 
@@ -94,6 +110,7 @@ return
 
 %% HELPERS
 function displayWSLcommand(cmd)
+   if silentmode, return; end
    maxLen = 1000;
    if (length(cmd) > maxLen)
       msg = sprintf('INVOKING: %s...\n', cmd(1:maxLen-3));
@@ -164,4 +181,5 @@ function wslcommand = escapeForCMD(wslcommand)
    wslcommand = strrep(wslcommand, '>', '^>');
    wslcommand = strrep(wslcommand, '<', '^<');
    wslcommand = strrep(wslcommand, ';', '^;');
+   wslcommand = strrep(wslcommand, '|', '^|');
 end
