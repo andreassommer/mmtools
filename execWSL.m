@@ -49,6 +49,7 @@ persistent WSLdistro verbose haltOnError dryrun silentmode
 if isempty(verbose)    ,     verbose = true ; end
 if isempty(haltOnError), haltOnError = true ; end
 if isempty(dryrun)     ,      dryrun = false; end
+if isempty(silentmode) ,  silentmode = false; end
 
 % ensure comment is accessible
 if (nargin<2), comment = ''; end

@@ -3,7 +3,7 @@ function varargout = makeMessage(arg1_printer, arg2_fID, varargin)
 % makeMessage( fID, ... )
 % makeMessage( printfunc, ... )
 % makeMessage( printfunc, fID, ... )
-% out = makMessage( ... )
+% out = makeMessage( ... )
 %
 % Displays informative messages.
 %
