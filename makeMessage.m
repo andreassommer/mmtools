@@ -95,9 +95,9 @@ end
 printerargs = varargin;
 varargout = callPrinter(caller, arg1_printer, arg2_fID, printerargs);
 
-
-
 % finito
+return
+
 
 %% internal helper
    function out = callPrinter(caller, printer, fID, printerargs)
@@ -121,7 +121,7 @@ function out = makeMessageInternal(caller, caller_formatter, format_processor, o
       args = {};
    else
       fmt = args{1};
-      args = args{2:end};
+      args = args(2:end);
    end
 
 
