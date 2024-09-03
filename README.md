@@ -16,7 +16,8 @@ E-Mail: code@andreas-sommer.eu
 
 Tools marked with ⭐ might be especially worth a look.  
 
-* [ADLER32](#adler32)           - Compute Adler32 hash                                    [[->code]](/ADLER32.m)
+* [ADLER32](#ADLER32)           - Compute Adler32 hash                                    [[->code]](/ADLER32.m)
+* [DEBUGME](#DEBUGME)           - Debug marker/helper for changed values                  [[->code]](/DEBUGME.m)
 * [execWSL](#execWSL)           - Execute command in WSL (Windows Subsystem for Linux)    [[->code]](/execWSL.m)
 * [getCaller](#getCaller)       - Retrieve calling function, file, line number            [[->code]](/getCaller.m)
 * [getWorkspaceVariable](#getWorkspaceVariable)  - Retrieve variable from other workspace [[->code]](/getWorkspaceVariable.m)
@@ -42,11 +43,26 @@ Documentation is provided inside the code and thus available using Matlab's help
 
 
 
-<a name="adler32"></a>
-<a id="adler32"></a>
+<a name="ADLER32"></a>
+<a id="ADLER32"></a>
 ## ADLER32   [[see code]](/ADLER32.m)
 
 Computes the Adler32 hash of a given char array.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+<a name="DEBUGME"></a>
+<a id="DEBUGME"></a>
+## DEBUGME   [[see code]](/DEBUGME.m)
+
+Debug helper for changed valued. It transparently returns the new value while displaying as message about that.  
+The message can be freely configurated. Helpful to not forget to undo test changes.  
+`var = sin(x + 0.5); `  -- original code to be modified  
+`var = sin(x + DEBUGME(1.5)); ` -- delivers value 1.5 and displays  standard debug marker message  
+`var = sin(x + DEBUGME(1.5, 'SIN offset changed to %g')); ` -- delivers 1.5 and displays individual message
+
 
 [Return to list of tools](#list-of-tools)
 
