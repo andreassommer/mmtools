@@ -142,7 +142,7 @@ function restore_MSESSION(MSESSION, selection)
       case 'session'
          restoreEditorFiles(MSESSION)
          restoreVariables(MSESSION);
-      case 'variables'
+      case {'vars','variables'}
          restoreVariables(MSESSION);
       case 'files'
          restoreEditorFiles(MSESSION)
@@ -165,7 +165,7 @@ function MSESSION = save_MSESSION_to_var(selection)
       case 'session'
          MSESSION.editorfiles = retrieveOpenEditorFiles();
          MSESSION.variables   = retrieveAllVariables();
-      case 'variables'
+      case {'vars','variables'}
          MSESSION.variables   = retrieveAllVariables();
       case 'files'
          MSESSION.editorfiles = retrieveOpenEditorFiles();
