@@ -40,6 +40,7 @@ function [value, cellarray] = olGetOption(cellarray, searchOption, defaultValue)
    % Initialize
    value = defaultValue;
    olAssertOptionlist(cellarray);
+   foundOption = false;
    
    % cycle through properties
    for k = 1:2:length(cellarray)
@@ -47,13 +48,14 @@ function [value, cellarray] = olGetOption(cellarray, searchOption, defaultValue)
       if strcmpi(optionName,searchOption)
          if (length(cellarray) >= k+1)
             value = cellarray{k+1};
+            foundOption = true;
             break
          end
       end
    end
    
    % if more than one output argument, remove the queried option
-   if (nargout >= 2)
-      cellarray = olRemoveOptions(cellarray, optionName);
+   if (nargout >= 2) && foundOption
+      cellarray = olRemoveOption(cellarray, searchOption);
    end
 end
