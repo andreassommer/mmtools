@@ -224,14 +224,18 @@ function val = f(a,b,varargin)
     numbers = {1,2,3,4,5};
     
     % Query optional arguments:
-    if olHasOption(varargin, 'name'   ),    name = olGetOption(varargin, 'name'   );  end
     if olHasOption(varargin, 'age'    ),     age = olGetOption(varargin, 'age'    );  end
     if olHasOption(varargin, 'numbers'), numbers = olGetOption(varargin, 'numbers');  end
-    
-    % program code 
+
+    % Alternatively, default arguments can be specified in olGetOption directly if key is not found:
+    name = olGetOption(varargin, 'name', '[UNKNOWN-PERSON]');
+   
+    % Program code 
     % ...
 end    
-``` 
+```
+The syntax `[value, remainingOptions] = olGetOption(options, key)` can be used to remove `key`
+from the optionlist. This is useful to check if there are some options left after processing.
 
 [Return to list of tools](#list-of-tools)
 
