@@ -1,15 +1,14 @@
-function [value, cellarray] = olGetOption(cellarray, searchOption, defaultValue)
-   % function [value, cellarray] = olGetOption(cellarray, searchOption)
-   % function [value, cellarray] = olGetOption(cellarray, searchOption, defaultValue)
+function [value, cellarray, foundOption] = olGetOption(cellarray, searchOption, defaultValue)
+   % function [value, cellarray, found] = olGetOption(cellarray, searchOption)
+   % function [value, cellarray, found] = olGetOption(cellarray, searchOption, defaultValue)
    %
-   % Searches cellarray, that is expected to be a cell array
-   % of name/value pairs, for specified option and returns
-   % the associated value.
+   % Searches cellarray, which is expected to be a cell array of name/value pairs,
+   % for specified option and returns the associated value.
    %
-   % Only the first occurance is reported.
-   % The property-Strings are case-insensitive.
+   % Only the first occurence is reported.
+   % The searchOption strings are case insensitive.
    %
-   % If the specified value cannot be found, a 'NaN' is returned.
+   % If the specified value cannot be found, the empty matrix [] is returned.
    % Try to check first via hasOption()-function, if the
    % the cell array contains the desired name/value pair.
    %
@@ -21,10 +20,11 @@ function [value, cellarray] = olGetOption(cellarray, searchOption, defaultValue)
    %
    % OUTPUT:      value --> value associated with queried option name
    %          cellarray --> cell array with queried option removed
+   %              found --> true if searchOption was found, false otherwise
    %
    %
    %
-   % Author:  Andreas Sommer, 2009,2010,2011,2016,2017,2022
+   % Author:  Andreas Sommer, 2009,2010,2011,2016,2017,2022,2024
    % andreas.sommer@iwr.uni-heidelberg.de
    % code@andreas-sommer.eu
    %
@@ -33,6 +33,7 @@ function [value, cellarray] = olGetOption(cellarray, searchOption, defaultValue)
    %           Mar2017 --> cut the cell array, if two-arg-output
    %           Dec2022 --> add default value 
    %           Jul2024 --> renamed to olGetOption
+   %           Sep2024 --> added found flag
    
    % was a default value provided?
    if (nargin<3), defaultValue = []; end
@@ -54,7 +55,7 @@ function [value, cellarray] = olGetOption(cellarray, searchOption, defaultValue)
       end
    end
    
-   % if more than one output argument, remove the queried option
+   % if more than one output argument, remove the queried option (if found)
    if (nargout >= 2) && foundOption
       cellarray = olRemoveOption(cellarray, searchOption);
    end

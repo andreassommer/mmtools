@@ -4,7 +4,7 @@ function varargout = ADLER32(instring)
    %
    % Computes the Adler-32 hash of given chararray.
    %
-   % INPUT:      string --> string whose hash shall be computed
+   % INPUT:      string --> char array whose hash shall be computed
    %
    % OUTPUT:  hashValue --> 32bit integer value of string's Adler-32 hash
    %         hashString --> readable string representation of hashValue
@@ -15,7 +15,7 @@ function varargout = ADLER32(instring)
    % andreas.sommer@iwr.uni-heidelberg.de
    % code@andreas-sommer.eu
 
-   % ensure instring is a chararray
+   % ensure instring is a char array
    instring = char(instring);
    
    % init
@@ -28,10 +28,9 @@ function varargout = ADLER32(instring)
       s2 = mod(s2 + s1          , 65521);
    end
 
-   % combine tthe two hashes
+   % combine the two hashes
    hashValue = s1 + 2^16 * s2;
    
-
    % check how many outputs were requested
    if (nargout>=0), varargout{1} = hashValue;           end
    if (nargout>=2), varargout{2} = toString(hashValue); end

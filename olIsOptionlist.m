@@ -40,7 +40,7 @@ function [answer, problem] = olIsOptionlist(object)
       key = object{k};
       if ~ischar(key)
          if (nargout > 1)
-            problem = sprintf('Element #%d is not a string, but a %s.', k, class(key));
+            problem = sprintf('Element #%d is not a char array, but a %s.', k, class(key));
          end
          return
       end
