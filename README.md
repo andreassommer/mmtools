@@ -17,6 +17,7 @@ E-Mail: code@andreas-sommer.eu
 Tools marked with ⭐ might be especially worth a look.  
 
 * [ADLER32](#ADLER32)           - Compute Adler32 hash                                    [[->code]](/ADLER32.m)
+* [condSet](#condSet)           - Conditionally set values in (cell) array/matrix/vector  [[->code]](/condSet.m)
 * [DEBUGME](#DEBUGME)           - Debug marker/helper for changed values                  [[->code]](/DEBUGME.m)
 * [execWSL](#execWSL)           - Execute command in WSL (Windows Subsystem for Linux)    [[->code]](/execWSL.m)
 * [getCaller](#getCaller)       - Retrieve calling function, file, line number            [[->code]](/getCaller.m)
@@ -48,6 +49,29 @@ Documentation is provided inside the code and thus available using Matlab's help
 ## ADLER32   [[see code]](/ADLER32.m)
 
 Computes the Adler32 hash of a given char array.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+<a name="condSet"></a>
+<a id="condSet"></a>
+## condSet   [[see code]](/condSet.m)
+
+Conditionally sets values in (cell) array/matrix/vector.
+Can also evaluate function on the elements of a given (cell) array/matrix/vector at places where 
+the specified condition is true or false.
+
+```matlab
+% EXAMPLE CALLS:
+M = magic(5); R = -rand(5);         % matrices for testing
+z = condSet(M>10, 1, 5)             % --> matrix of size(M) with 1 where M>10, and 5 otherwise
+z = condSet(M>10, 1, 5, {})         % --> cell array of size(M) with 1 where M>10, and 5 otherwise
+z = condSet(M>10, '2BIG')           % --> cell array of size(M) with '2BIG' where M>10
+z = condSet(M>10, 10, M)            % --> copy of M with value 10 where M>10
+z = condSet(M>10, @(x) x^2, -1, M)  % --> copy of M with squared entries where M>10, and -1 otherwise
+z = condSet(M>10, R, {}, M)         % --> copy of M with values from R where M>10
+```
 
 [Return to list of tools](#list-of-tools)
 
