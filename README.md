@@ -16,24 +16,25 @@ E-Mail: code@andreas-sommer.eu
 
 Tools marked with ⭐ might be especially worth a look.  
 
-* [ADLER32](#ADLER32)           - Compute Adler32 hash                                    [[->code]](/ADLER32.m)
-* [condSet](#condSet)           - Conditionally set values in (cell) array/matrix/vector  [[->code]](/condSet.m)
-* [DEBUGME](#DEBUGME)           - Debug marker/helper for changed values                  [[->code]](/DEBUGME.m)
-* [execWSL](#execWSL)           - Execute command in WSL (Windows Subsystem for Linux)    [[->code]](/execWSL.m)
-* [getCaller](#getCaller)       - Retrieve calling function, file, line number            [[->code]](/getCaller.m)
-* [getWorkspaceVariable](#getWorkspaceVariable)  - Retrieve variable from other workspace [[->code]](/getWorkspaceVariable.m)
-* [hornereval](#hornereval)     - Evaluate 1d polynomial using Horner's scheme            [[->code]](/hornereval.m)
-* [hornereval2D](#hornereval2D) - Evaluate 2d polynomial using Horner's scheme            [[->code]](/hornereval2D.m)
+* [ADLER32](#ADLER32)           - Compute Adler32 hash                                      [[->code]](/ADLER32.m)
+* [condSet](#condSet)           - Conditionally set values in (cell) array/matrix/vector    [[->code]](/condSet.m)
+* [DEBUGME](#DEBUGME)           - Debug marker/helper for changed values                    [[->code]](/DEBUGME.m)
+* [execWSL](#execWSL)           - Execute command in WSL (Windows Subsystem for Linux)      [[->code]](/execWSL.m)
+* [findFirstGreater](#findFirstGreater)  - Finds first array entry greater than given value [[->code]](/findFirstGreater.m)
+* [getCaller](#getCaller)       - Retrieve calling function, file, line number              [[->code]](/getCaller.m)
+* [getWorkspaceVariable](#getWorkspaceVariable)  - Retrieve variable from other workspace   [[->code]](/getWorkspaceVariable.m)
+* [hornereval](#hornereval)     - Evaluate 1d polynomial using Horner's scheme              [[->code]](/hornereval.m)
+* [hornereval2D](#hornereval2D) - Evaluate 2d polynomial using Horner's scheme              [[->code]](/hornereval2D.m)
 * [integrate_with_restarts⭐](#integrate_with_restarts) - Integrade implicitly switched ODE with state jumps [[->code]](/integrate_with_restarts.m)
-* [isfigure](#isfigure)         - Check if variable is handle to a figure                 [[->code]](/isfigure.m)
-* [istext](#istext)             - Check if variable is a char array or a string           [[->code]](/istext.m)
-* [makeClosure](#makeClosure)   - Mimick pass-by-reference via closure                    [[->code]](/makeClosure.m)
-* [makeMessage](#makeMessage)   - Message generating with preponed Caller                 [[->code]](/makeMessage.m)
+* [isfigure](#isfigure)         - Check if variable is handle to a figure                   [[->code]](/isfigure.m)
+* [istext](#istext)             - Check if variable is a char array or a string             [[->code]](/istext.m)
+* [makeClosure](#makeClosure)   - Mimick pass-by-reference via closure                      [[->code]](/makeClosure.m)
+* [makeMessage](#makeMessage)   - Message generating with preponed Caller                   [[->code]](/makeMessage.m)
 * [msession⭐](#msession)       - Store and retrieve Matlab sessions (open files, work space variables, etc.) [[->code]](/msession.m)
-* [optionlists⭐](#optionlists) - Handle name-value pairs                                 [[->code]](/olGetOption.m)
-* [roundto](#roundto)           - Rounds values to nearest divisor value                  [[->code]](/roundto.m)
-* [sviz](#sviz)                 - Simple visualizer                                       [[->code]](/sviz.m)
-* [whichToolboxFor](#whichToolboxFor) - Investigate toolbox dependency of code            [[->code]](/whichToolboxFor.m)
+* [optionlists⭐](#optionlists) - Handle name-value pairs                                   [[->code]](/olGetOption.m)
+* [roundto](#roundto)           - Rounds values to nearest divisor value                    [[->code]](/roundto.m)
+* [sviz](#sviz)                 - Simple visualizer                                         [[->code]](/sviz.m)
+* [whichToolboxFor](#whichToolboxFor) - Investigate toolbox dependency of code              [[->code]](/whichToolboxFor.m)
 
 Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`.
 
@@ -98,6 +99,17 @@ The message can be freely configurated. Helpful to not forget to undo test chang
 
 Executes a command in WSL (Windows Subsystem for Linux).  
 Distribution can be chosen. Dryrun and echoing supported.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+<a name="findFirstGreater"></a>
+<a id="findFirstGreater"></a>
+## findFirstGreater   [[see code]](/findFirstGreater.m)
+
+Firns first entry in array that is greater than a specified value.
+Optionally starts search at given index.
 
 [Return to list of tools](#list-of-tools)
 
