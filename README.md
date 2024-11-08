@@ -231,15 +231,16 @@ The user can select what to be stored:
 # optionlists⭐   [[see code]](/olGetOption.m)
 
 Matlab tools for handling name-value pairs, especially in function calls.
-  - querying arguments by name:     `olGetOption`
-  - checking for present arguments: `olHasOption`
-  - generation of option lists:     `olSetOption`
-  - removing from option lists:     `olRemoveOption`
-  - checking validity:              `olIsOptionlist`, `olAssertOptionlist` 
+  - querying arguments by name:      `olGetOption`
+  - checking for present arguments:  `olHasOption`
+  - generation of option lists:      `olSetOption`
+  - removing from option lists:      `olRemoveOption`
+  - checking validity:               `olIsOptionlist`, `olAssertOptionlist` 
+  - warn upon unprocessed arguments: `olWarnIfNotEmpty`
 
 ### Documentation
 
-For details, see, `help olGetOption`.
+For details, see, `help olGetOption`, etc.
 
 ### Example
 
@@ -271,7 +272,8 @@ function val = f(a,b,varargin)
 end    
 ```
 The syntax `[value, remainingOptions] = olGetOption(options, key)` can be used to remove `key`
-from the optionlist. This is useful to check if there are some options left after processing.
+from the optionlist. This is useful to check if there are some options left after processing
+using `olWarnIfNotEmpty`.
 
 [Return to list of tools](#list-of-tools)
 
