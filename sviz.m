@@ -11,7 +11,7 @@ function sviz(datstruct, fignum, figname)
 %
 % No error or consistency checks are done.
 %
-% Andreas Sommer, Apr2024
+% Andreas Sommer, Apr2024, Nov2024
 % code@andreas-sommer.eu
 %
 
@@ -19,7 +19,7 @@ function sviz(datstruct, fignum, figname)
 % check args
 if ( (nargin<1) || ~isstruct(datstruct) ), error('No data structure provided.'); end
 if (nargin<2), fignum = 3432; end
-if (nargin<3), figname = '';  end
+if (nargin<3), figname = inputname(1);  end  % try to get the variable name if figname is not specified
 
 % get the data fields
 datnames = fieldnames(datstruct);
