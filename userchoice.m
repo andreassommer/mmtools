@@ -46,7 +46,7 @@ function numsel = chooser(choices, default)
       if ( numsel >= 1 ) && ( numsel <= nchoices ) && ( mod(numsel,1) == 0 )
          validchoice = true;
       else
-         fprintf('Invalid choice. Try again. ');
+         fprintf('Invalid choice. Type one of the displayed numbers. Try again.\n');
       end
    end
 end
