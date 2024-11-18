@@ -22,7 +22,8 @@ function varargout = makeMessage(arg1_printer, arg2_fID, varargin)
 % 
 % Configuration can be changed using special keywords starting with '#' as first argument
 %     #set_caller_width     --> set minimum field width of caller name to arg
-%     #set_caller_formatter --> set arg to 'centeres', 'leftaligned', or 'rightaligned'
+%                               a subsequent call to #set_caller_formatter is necessary to take effect
+%     #set_caller_formatter --> set arg to 'centered', 'leftaligned', or 'rightaligned'
 %     #set_autonewline      --> set arg to true to emit a newline automatically
 %
 %
