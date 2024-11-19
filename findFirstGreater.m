@@ -1,19 +1,20 @@
-function foundidx = findFirstGreater(x, xq, idx, notFoundVal)
-% foundidx = findFirstGreater(x, xq, idx)
-% foundidx = findFirstGreater(x, xq, idx, notFoundVal)
+function [foundidx, foundflag] = findFirstGreater(x, xq, idx, notFoundVal)
+% [foundidx, foundflag] = findFirstGreater(x, xq, idx)
+% [foundidx, foundflag] = findFirstGreater(x, xq, idx, notFoundVal)
 %
-% Find first entry in array that is greater than specified value, 
-% starting from given (linear) index.
+% Find first entry in array that is GREATER than specified value, 
+% starting search FORWARD from given (linear) index.
 %
 % INPUT:    x --> vector to be searched in 
 %          xq --> value to be searched for
 %         idx --> linear index in x to start the search in
-% notFoundVal --> value to be returned if no value greater than xq can be found [default: 0]
+% notFoundVal --> value to be returned if no value GREATER than xq can be found [default: 0]
 %
 % OUTPUT:   foundidx --> linear index in array x of first element greater than xq
+%          foundflag --> true if a value GREATER than xq was found, false otherwise
 %
 %
-% Andreas Sommer, Sep2024
+% Andreas Sommer, Sep2024, Nov2024
 % code@andreas-sommer.eu
 %
 
@@ -22,8 +23,9 @@ function foundidx = findFirstGreater(x, xq, idx, notFoundVal)
 if (nargin < 4), notFoundVal = 0; end
 
 foundidx = notFoundVal;
+foundflag = false;
 for i = idx:numel(x)   
-   if x(i) > xq, foundidx = i; return; end
+   if x(i) > xq, foundidx = i; foundflag = true; return; end
 end
 
 end % of function
