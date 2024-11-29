@@ -22,7 +22,8 @@ Tools marked with ⭐ might be especially worth a look.
 * [execWSL](#execWSL)           - Execute command in WSL (Windows Subsystem for Linux)      [[->code]](/execWSL.m)
 * [findFirstGreater](#findFirstGreater)  - Finds first array entry greater than given value [[->code]](/findFirstGreater.m)
 * [getCaller](#getCaller)       - Retrieve calling function, file, line number              [[->code]](/getCaller.m)
-* [getWorkspaceVariable](#getWorkspaceVariable)  - Retrieve variable from other workspace   [[->code]](/getWorkspaceVariable.m)
+* [getParentFigure](#getParentFigure)           - Retrieve figure containing given handle   [[->code]](/getCaller.m)
+* [getWorkspaceVariable](#getWorkspaceVariable) - Retrieve variable from other workspace    [[->code]](/getWorkspaceVariable.m)
 * [hornereval](#hornereval)     - Evaluate 1d polynomial using Horner's scheme              [[->code]](/hornereval.m)
 * [hornereval2D](#hornereval2D) - Evaluate 2d polynomial using Horner's scheme              [[->code]](/hornereval2D.m)
 * [integrate_with_restarts⭐](#integrate_with_restarts) - Integrade implicitly switched ODE with state jumps [[->code]](/integrate_with_restarts.m)
@@ -88,6 +89,11 @@ The message can be freely configurated. Helpful to not forget to undo test chang
 `var = sin(x + DEBUGME(1.5)); ` -- delivers value 1.5 and displays  standard debug marker message  
 `var = sin(x + DEBUGME(1.5, 'SIN offset changed to %g')); ` -- delivers 1.5 and displays individual message
 
+Special command initiated with `#` allow configuration of debug output.
+- The printer for the debug message can be chosen via special command `#printer` and set to any function handle
+  that can parse fprintf like input, e.g. `@fprintf` or `@warning`
+- Quick reset can be done using special command `#reset`
+- See code for details.
 
 [Return to list of tools](#list-of-tools)
 
@@ -141,6 +147,16 @@ Evaluation of 2d polynomials using Horner's scheme.
 
 Retrieve calling function, optionally with file name and line number.
 Relies on Matlab's dbstack.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+<a name="getParentFigure"></a>
+<a id="getParentFigure"></a>
+## getParentFigure   [[see code]](/getParentFigure.m)
+
+Retrieve the handle of the figure that contains the specified graphics handle.
 
 [Return to list of tools](#list-of-tools)
 
@@ -231,12 +247,15 @@ The user can select what to be stored:
 # optionlists⭐   [[see code]](/olGetOption.m)
 
 Matlab tools for handling name-value pairs, especially in function calls.
-  - querying arguments by name:      `olGetOption`
-  - checking for present arguments:  `olHasOption`
-  - generation of option lists:      `olSetOption`
-  - removing from option lists:      `olRemoveOption`
-  - checking validity:               `olIsOptionlist`, `olAssertOptionlist` 
-  - warn upon unprocessed arguments: `olWarnIfNotEmpty`
+  - querying arguments by name:       `olGetOption`
+  - checking for present arguments:   `olHasOption`
+  - generation of option lists:       `olSetOption`
+  - removing from option lists:       `olRemoveOption`
+  - checking validity:                `olIsOptionlist`
+  - checking validity with assertion: `olAssertOptionlist` 
+  - retrieving list of all names:     `olCollectOptionNames`
+  - retrieving list of all values:    `olCollectOptionValues`
+  - warn upon unprocessed arguments:  `olWarnIfNotEmpty`
 
 ### Documentation
 
@@ -296,7 +315,7 @@ See roundto_example.m for an example.
 <a id="sviz"></a>
 # sviz   [[see code]](/sviz.m)
 
-Simple viszalization tool.
+Simple visualization tool. 
 
 [Return to list of tools](#list-of-tools)
 

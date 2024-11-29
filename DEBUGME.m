@@ -1,4 +1,4 @@
-function value = DEBUGME(varargin)
+function value = DEBUGME(value, message)
 % value = DEBUGME(value)
 % value = DEBUGME(value, message)
 % DEBUGME('#setmessage', messagefmt)
@@ -11,49 +11,41 @@ function value = DEBUGME(varargin)
 %                     #debug      --> output debug marker only
 %                     #echo%g     --> output debug marker and echo the value on the screen
 %                     #setmessage --> set debug message for subsequent called
+%                     #printer    --> handle to printer to be used (@fprintf, @warning, etc)
 %         message --> optional debug message to be displayed (passed to fprintf)
 %
 % OUTPUT:   value --> same as input value
 %
-% NOTE:   if message containts a "%", then the value is forwarded to fprintf.
+% NOTE:   For message containing "%", value is forwarded to the printer.
 %
 %
 % Andreas Sommer, Aug2024
 % code@andreas-sommer.eu
 %
 
-persistent default_message default_includevalueinmessage
+persistent storedMessage storedMessageIncludesValue printer
+
+% printer
+if isempty(printer)
+   printer = @warning;
+end
 
 % initialize persistent variables
-if isempty(default_message) || isempty(default_includevalueinmessage)
-   default_message = 'INIT';
-   default_includevalueinmessage = false;
+if isempty(storedMessage) || isempty(storedMessageIncludesValue)
+   storedMessage = 'INIT';
+   storedMessageIncludesValue = false;
    DEBUGME('#reset');
-   value = DEBUGME(varargin{:}); % replay command
-   return
 end
 
-% NO INPUT: just print marker
+
+% NO INPUT: just print storedMessage and return
 if (nargin == 0)
-   if default_includevalueinmessage
-      fprintf(default_message, nan());
+   if storedMessageIncludesValue
+      printer(storedMessage, []);
    else
-      fprintf(default_message)
+      printer(storedMessage)
    end
    return;
-end
-
-% set defaults
-message               = default_message;
-includevalueinmessage = default_includevalueinmessage;
-
-% dissect input
-if (nargin >= 1)
-   value = varargin{1};
-end
-if (nargin >= 2)
-   message = varargin{2};
-   includevalueinmessage = contains(message, '%');
 end
 
 
@@ -63,10 +55,14 @@ if ischar(value) && value(1)=='#'
       case '#reset' ,   DEBUGME('#echo%g');
       case '#debug' ,   DEBUGME('#setmessage', 'DEBUG');
       case '#echo%g',   DEBUGME('#setmessage', 'DEBUGME(%g)');
+      case '#printer'
+         if isa(message, 'function_handle')
+            printer = message;
+         end
       case '#setmessage'
-         default_message = message;
-         if contains(default_message, '%')
-            default_includevalueinmessage = true;
+         storedMessage = message;
+         if contains(storedMessage, '%')
+            storedMessageIncludesValue = true;
          end
       otherwise
          error('Unknown special command: %s', value);
@@ -75,11 +71,23 @@ if ischar(value) && value(1)=='#'
 end
 
 
-% generate output
-if includevalueinmessage
-   fprintf(message, value);
+% dissect input
+if (nargin < 1)
+   value = [];
+end
+if (nargin < 2)
+   message              = storedMessage;
+   messageIncludesValue = storedMessageIncludesValue;
 else
-   fprintf(message);
+   messageIncludesValue = contains(message, '%');
+end
+
+
+% generate output
+if messageIncludesValue
+   printer(message, value);
+else
+   printer(message);
 end
 
 % value is just forwarded unchanged

@@ -1,11 +1,12 @@
-function sviz(datstruct, fignum, figname)
-% sviz(datstruct, fignum, figname)
+function sviz(datstruct, fignum, figname, datstruct2)
+% sviz(datstruct, fignum, figname, datstruct2)
 %
 % Simple visualizer.
 %
 % INPUT:    datstruct --> Matlab struct whose fields will be used as data source.
 %              fignum --> figure number to use
 %             figname --> name for the figure window [optional]
+%          datstruct2 --> Second datstruct with same fields to be displayed.
 %
 % OUTPUT:   none.
 %
@@ -18,8 +19,9 @@ function sviz(datstruct, fignum, figname)
 
 % check args
 if ( (nargin<1) || ~isstruct(datstruct) ), error('No data structure provided.'); end
-if (nargin<2), fignum = 3432; end
-if (nargin<3), figname = inputname(1);  end  % try to get the variable name if figname is not specified
+if ( (nargin<2)                         ),     fignum = 3432;          end
+if ( (nargin<3) || isempty(figname)     ),    figname = inputname(1);  end  % try to get the variable name 
+if ( (nargin<4)                         ), datstruct2 = [];            end
 
 % get the data fields
 datnames = fieldnames(datstruct);
@@ -74,11 +76,28 @@ function plotbutton_callback(h, event)
    x = datstruct.(xName);
    y = datstruct.(yName);
    plot(hlist.ax, x, y, 'b.');
+   % second datstruct specified?
+   if ~isempty(datstruct2)
+      x2 = datstruct2.(xName);
+      y2 = datstruct2.(yName);
+      holdstate = isempty(hlist.ax);
+      hold(hlist.ax, 'on');
+      plot(hlist.ax, x2, y2, 'r.', 'MarkerSize', 2);
+      hold(hlist.ax, onoff(holdstate));
+   end
+   % format
    ytickformat(hlist.ax, '%9.3g');
    % link axes 
    linkaxes([handles.h1.ax handles.h2.ax], 'x')
 end
 
 
+function r = onoff(tf)
+   if tf
+      r = 'on';
+   else
+      r = 'off';
+   end
+end
 
 end % of function
