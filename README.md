@@ -33,6 +33,7 @@ Tools marked with ⭐ might be especially worth a look.
 * [makeMessage](#makeMessage)   - Message generating with preponed Caller                   [[->code]](/makeMessage.m)
 * [msession⭐](#msession)       - Store and retrieve Matlab sessions (open files, work space variables, etc.) [[->code]](/msession.m)
 * [optionlists⭐](#optionlists) - Handle name-value pairs                                   [[->code]](/olGetOption.m)
+* [pointpicker](#pointpicker)   - Pick and collect coordinates by clicking in figure        [[->code]](/pointpicker.m)
 * [roundto](#roundto)           - Rounds values to nearest divisor value                    [[->code]](/roundto.m)
 * [sviz](#sviz)                 - Simple visualizer                                         [[->code]](/sviz.m)
 * [whichToolboxFor](#whichToolboxFor) - Investigate toolbox dependency of code              [[->code]](/whichToolboxFor.m)
@@ -293,6 +294,23 @@ end
 The syntax `[value, remainingOptions] = olGetOption(options, key)` can be used to remove `key`
 from the optionlist. This is useful to check if there are some options left after processing
 using `olWarnIfNotEmpty`.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+
+<a id="pointpicker"></a>
+<a name="pointpicker"></a>
+## pointpicker   [[see code]](/pointpicker.m)
+
+This tool is intended to collect point coordinated from a matlab figure, and pick and collect points by clicking.
+Register to the current axis using `pointpicker(gca())`.
+
+The pointpicker may be registered to multiple figures/axes, but only collects points from the currently active one.
+By pressing key 'a' while in the registered axis, the mouse changes to a crosshairs and multiple points can be collected;
+the last one picked can be deleted by pressing 'd'. Collection is ended by pressing 'x'.
+Collected points may be retrieved into a variable by `points = pointpicker('#GET')` or saved to file.
 
 [Return to list of tools](#list-of-tools)
 
