@@ -1,12 +1,12 @@
 function [prom, promIdx] = calcProm(x, y, qiy, w, dir)
 % [prom, promIdx] = calcProm(x, y, qiy, w, dir)
 %
-% Calculates prominence of y(idx) in specified signal.
+% Calculates prominence of y(qiy) in specified signal.
 %
 % INPUT:  x --> x values (independent variable, must be strongly monotonic increasing)
 %         y --> y values (signal)
 %       qiy --> query index of y-value whose prominente shall be calculated (can be vector)
-%        xw --> selects x window to search for prominence               [ default:  [-inf inf]) ]
+%        xw --> selects x window to search for prominence               [ default:  [-inf inf] ]
 %               e.g. xw = 100      searches for prominence within 100 units around x(idx)
 %                    xw = [-5 100] searches for prominence in [x(idx) - 5, x(idx) + 100]
 %       dir --> select prominence direction:                            [ default: +1 ]
@@ -14,9 +14,9 @@ function [prom, promIdx] = calcProm(x, y, qiy, w, dir)
 %               -1: search for negative prominence (i.e. prominence of negative signal)
 %                0; search for both prominences
 %
-% OUTPUT:   prom -->
+% OUTPUT:   prom --> determined prominence of points specified in y(qiy)
+%        promIdx --> indices of elements in y belonging to the prominence values in array prom
 %
-% If window border is reached ...
 %
 % Andreas Sommer, Nov2024
 % code@andreas-sommer.eu

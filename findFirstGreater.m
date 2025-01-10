@@ -7,7 +7,7 @@ function [foundidx, foundflag] = findFirstGreater(x, xq, idx, notFoundVal)
 %
 % INPUT:    x --> vector to be searched in 
 %          xq --> value to be searched for
-%         idx --> linear index in x to start the search in
+%         idx --> linear index in x to start the search in                      [default: 1]
 % notFoundVal --> value to be returned if no value GREATER than xq can be found [default: 0]
 %
 % OUTPUT:   foundidx --> linear index in array x of first element greater than xq
@@ -21,6 +21,7 @@ function [foundidx, foundflag] = findFirstGreater(x, xq, idx, notFoundVal)
 % NOTE: Matlab's JIT makes the for loop very fast, no bound checks are done
 
 if (nargin < 4), notFoundVal = 0; end
+if (nargin < 3),         idx = 1; end
 
 foundidx = notFoundVal;
 foundflag = false;
