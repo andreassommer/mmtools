@@ -35,10 +35,10 @@ function [answer, problem] = olIsOptionlist(object)
       return
    end
    
-   % walk through keys and check if they are strings
+   % walk through keys and check if they are strings / chararrays
    for k = 1:2:length(object)
       key = object{k};
-      if ~ischar(key)
+      if ~ischar(key) && ~isstring(key)
          if (nargout > 1)
             problem = sprintf('Element #%d is not a char array, but a %s.', k, class(key));
          end

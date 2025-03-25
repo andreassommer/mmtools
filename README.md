@@ -265,6 +265,7 @@ Matlab tools for handling name-value pairs, especially in function calls.
   - checking for present arguments:   `olHasOption`
   - generation of option lists:       `olSetOption`
   - removing from option lists:       `olRemoveOption`
+  - rename existing options:          `olRenameOption`
   - checking validity:                `olIsOptionlist`
   - checking validity with assertion: `olAssertOptionlist` 
   - retrieving list of all names:     `olCollectOptionNames`
