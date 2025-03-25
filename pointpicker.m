@@ -14,17 +14,21 @@ function varargout = pointpicker(axh, varargin)
 %     
 %     There must be no "special" mode like zooming or rotation be active,
 %     otherwise a warning about WindowKeyPressFcn will be issued.
+%
+%     pointpicker may be registered to multiple figures/axes, 
+%     but only collects points from the currently active one.
 %     
 % (2) pointpicker('#COMMAND', args...)
 %     #COMMAND args
-%     #GET     --        retrieve points, see (3)
-%     #RESET   --        delete all stored points and reset pointpicker
-%     #SILENT  true      disable text output during usage
-%     #SILENT  false     enable text output during usage
-%     #SHOW    --        display collected points
-%     #SAVE    filename  store collected points to specified file
-%     #DELETE  --        delete last stored point
-%     #ADD     x, y      manually store point (x,y) 
+%     #GET     --         retrieve points, see (3)
+%     #RESET   --         delete all stored points and reset pointpicker
+%     #SILENT  true       disable text output during usage
+%     #SILENT  false      enable text output during usage
+%     #SHOW    --         display collected points
+%     #SAVE    filename   store collected points to specified file
+%     #DELETE  --         delete last stored point
+%     #ADD     x, y       manually store point (x,y) 
+%     #UNREG   fighandle  de-register callback from specified figure (NOT YET IMPLEMENTED)
 %               
 % (3) points = pointpicker('#GET')
 %          returns the collected points as a structure with fields X and Y
