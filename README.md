@@ -20,6 +20,7 @@ Tools marked with ⭐ might be especially worth a look.
 * [condSet](#condSet)           - Conditionally set values in (cell) array/matrix/vector    [[->code]](/condSet.m)
 * [DEBUGME](#DEBUGME)           - Debug marker/helper for changed values                    [[->code]](/DEBUGME.m)
 * [execWSL](#execWSL)           - Execute command in WSL (Windows Subsystem for Linux)      [[->code]](/execWSL.m)
+* [filecopy](#filecopy)         - Copy individual files                                     [[->code]](/filecopy.m)
 * [findfield](#findfield)       - Find field in struct by regular expressions               [[->code]](/findfield.m)
 * [findFirstGreater](#findFirstGreater)  - Finds first array entry greater than given value [[->code]](/findFirstGreater.m)
 * [getCaller](#getCaller)       - Retrieve calling function, file, line number              [[->code]](/getCaller.m)
@@ -107,6 +108,18 @@ Special command initiated with `#` allow configuration of debug output.
 
 Executes a command in WSL (Windows Subsystem for Linux).  
 Distribution can be chosen. Dryrun and echoing supported.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+<a name="filecopy"></a>
+<a id="filecopy"></a>
+## filecopy   [[see code]](/filecopy.m)
+
+Copy individual files in an operating system independent way.
+In contrast to Matlab's copyfile(), this filecopy() does not transfer permissions from the source
+but creates the destination file with the current user's permission set.
 
 [Return to list of tools](#list-of-tools)
 
