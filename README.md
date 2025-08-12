@@ -37,7 +37,8 @@ Tools marked with ⭐ might be especially worth a look.
 * [optionlists⭐](#optionlists) - Handle name-value pairs                                   [[->code]](/olGetOption.m)
 * [pointpicker](#pointpicker)   - Pick and collect coordinates by clicking in figure        [[->code]](/pointpicker.m)
 * [roundto](#roundto)           - Rounds values to nearest divisor value                    [[->code]](/roundto.m)
-* [sviz](#sviz)                 - Simple visualizer                                         [[->code]](/sviz.m)
+* [stopOnKeyPress](#stopOnKeyPress)   - displays a stop figure that reacts on key press     [[->code]](/stopOnKeyPress.m)
+* [sviz](#sviz)                       - Simple visualizer                                         [[->code]](/sviz.m)
 * [whichToolboxFor](#whichToolboxFor) - Investigate toolbox dependency of code              [[->code]](/whichToolboxFor.m)
 
 Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`.
@@ -350,6 +351,19 @@ Collected points may be retrieved into a variable by `points = pointpicker('#GET
 
 Rounds values to the nearest divisor value.
 See roundto_example.m for an example.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+
+<a name="stopOnKeyPress"></a>
+<a id="stopOnKeyPress"></a>
+# stopOnKeyPress   [[see code]](/stopOnKeyPress.m)
+
+Opens a figure that listens to key pressed and checks if a stop key is hit.
+The figure can also display a message, some progress information, or an updating counter.
+See the code for a detailed usage with example.
 
 [Return to list of tools](#list-of-tools)
 
