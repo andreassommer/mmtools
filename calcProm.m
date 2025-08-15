@@ -5,7 +5,7 @@ function [prom, promIdx] = calcProm(x, y, qiy, w, dir)
 %
 % INPUT:  x --> x values (independent variable, must be strongly monotonic increasing)
 %         y --> y values (signal), same size as x
-%       qiy --> query index of y-value whose prominente shall be calculated (can be vector)
+%       qiy --> query index of y-value whose prominence shall be calculated (can be vector)
 %         w --> selects x window to search for prominence               [ default:  [-inf inf] ]
 %               e.g. w = 100      searches for prominence within 100 units around x(qiy)
 %                    w = [-5 100] searches for prominence in [x(qiy) - 5, x(qiy) + 100]
@@ -28,14 +28,15 @@ if (nargin < 5); dir = +1; end
 
 % if qiy is a vector, call self multiple times - not time optimal, as we could store the window calculation
 if ~isscalar(qiy)
-   [prom, promIdx] = arrayfun(@(i) calcProm(x,y,i,w,dir), qiy);
+   if (dir<0), y = -y; end                   % manually inverse y signal here instead within every sub-call
+   [prom, promIdx] = arrayfun(@(i) calcProm(x,y,i,w,+1), qiy);  % always use positive direction in sub-call
    return
 end
 
 % cut out window
 if isempty(w) || all(isinf(w))
    xiL = 1;            % index in x, left bound
-   xiR = numel(x);     % index in x, right bound
+   %xiR = numel(x);    % index in x, right bound
    qiyy = qiy;         % query index y(qiy) in yy array
    xx = x;             % x array cut to window
    yy = y;             % y array cut to window

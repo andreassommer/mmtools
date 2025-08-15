@@ -101,7 +101,7 @@ if ( wslcommand(1)=='#' )
       case 'raw'
          [status, cmdout] = raw_WSL_call(comment);
       case 'status'
-         [status, cmdout] = query_WSL_status()
+         [status, cmdout] = query_WSL_status();
       otherwise
          error('%s: Unknown internal command!', mfilename());
    end
