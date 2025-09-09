@@ -12,6 +12,7 @@ function [idxPeaks, valPeaks, peakInfo] = findLocalPeaks(signal, direction, vara
 %          onlyStrict --> only search for strict local extrema                [default: true ]
 %             minProm --> minimum prominence value                            [default: 0    ]
 %             relProm --> relative prominence, w.r.t. highest signal value    [default: false]
+% 
 %                sort --> sort order of found peaks:
 %                            'signal' -> keep order as in signal
 %                            'ascend' -> sort in ascending order
@@ -44,6 +45,8 @@ args = varargin;
 [sortOrder      , args] = olGetOption(args, 'sort'           , ''   );
 [minProm        , args] = olGetOption(args, 'minProm'        , 0    );
 [relProm        , args] = olGetOption(args, 'relProm'        , false);
+[mostProminent  , args] = olGetOption(args, 'mostProminent'  , 0    );
+
 
 % arguments left?
 if ~isempty(args)
@@ -93,27 +96,42 @@ if direction <= 0
    idxMin = union(linidx_falling_end, linidx_rising_start);
 end
 
-% only keep those with minimum prominence
-if minProm > 0
-   % if xvals was not given, use numbered indices
-   if isempty(xvals), xvals = 1:length(signal); end
+% minimum prominence requested?
+if (minProm > 0)
    % determine prominences
    promsMin = []; promsMax = [];
    if direction >= 0, promsMax = calcProm(xvals, signal, idxMax, [], +1); end
    if direction <= 0, promsMin = calcProm(xvals, signal, idxMin, [], -1); end
-   promsMin = abs(promsMin);  % calcProms gives left/right prominence info with +/- sign
+   promsMin = abs(promsMin);  % calcProms encodes left/right prominence info with +/- sign
    promsMax = abs(promsMax);
    % if relative prominence requested, normalize by maximum (absolute) signal
    if relProm, promsMin = promsMin / max(abs(signal)); end
    if relProm, promsMax = promsMax / max(abs(signal)); end
-   % select prominences
+   % only keep those with minimum prominence
    idxMin = idxMin( promsMin >= minProm );
    idxMax = idxMax( promsMax >= minProm );
 end
 
-
 % combine minima and maxima, ensure single row
-idxExtrema = reshape( union(idxMax, idxMin), 1, []);
+idxExtrema = reshape( union(idxMax, idxMin), 1, [] );
+
+% only keep those with largest prominence
+if (mostProminent ~= 0)
+   % calculate the prominences to the left - within the extrema (not the signal, as it might be too noisy)
+   xExtrema = xvals(idxExtrema);
+   yExtrema = signal(idxExtrema);
+   iExtrema = 1:length(idxExtrema);
+   if (mostProminent > 0) % total/combined prominence, checked in both directions 
+      proms = calcProm(xExtrema, yExtrema, iExtrema, [], 0, 0);
+   end
+   % % % promsL = calcProm(xExtrema, yExtrema, iExtrema, [], 0, -1);
+   % % % promsR = calcProm(xExtrema, yExtrema, iExtrema, [], 0, +1);
+   % % % proms = abs(proms); % calcProm encodes left/right prominence info with +/- sign
+   [~, sortIdx ] = sort(abs(proms), 'descend');
+   idxExtrema = idxExtrema( sortIdx(1:min(end, abs(mostProminent))) );
+end
+
+
 
 % possibly remove non-strict extrema
 if onlyStrict
@@ -199,5 +217,15 @@ function idxStrictExtrema = removeNonStrictExtrema(signal, idxExtrema, tol)
 end
 
 
+% 
+% function [prom] = getAbsProminence(xvals, signal, idx, dir)
+%    % if xvals was not given, use numbered indices
+%    if isempty(xvals), xvals = 1:length(signal); end
+%    % determine prominences
+%    prom = calcProm(xvals, signal, idx, [], dir);
+%    prom = abs(prom);  % calcProms gives left/right prominence info with +/- sign
+% end
+% 
+% 
 
 
