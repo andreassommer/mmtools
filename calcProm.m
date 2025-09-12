@@ -1,5 +1,5 @@
 function [prom, promIdx] = calcProm(x, y, qiy, w, type, dir, infVal)
-% [prom, promIdx] = calcProm(x, y, qiy, w, type)
+% [prom, promIdx] = calcProm(x, y, qiy, type, dir, infVal)
 %
 % Calculates prominence of y(qiy) in specified signal.
 %
@@ -16,11 +16,15 @@ function [prom, promIdx] = calcProm(x, y, qiy, w, type, dir, infVal)
 %                0: search for both prominences
 %       dir --> direction for prominence calculation                               [ default: 0 ]
 %               +1: search in positive direction (to the right, increasing x values)
-%                0: search in both directions (to the left and right) 
+%                0: search in both directions (to the left and right) and return maximum prominence 
 %               -1: search in negative direction (to the left, decreasing x values)
+%              inf: search in both directions and return all prominences as 4x4 matrix  -- NOT YET IMPLEMENTED --
 %    infVal --> value for infinite prominence                                      [ default: x(end)-x(1) ]
 %
 % OUTPUT:   prom --> determined prominence of points specified in y(qiy)
+%                    if dir==-1, left prominence is returned (always negative)
+%                    if dir==+1, right prominence is returned (always positive)
+%                    if dir==0, maxium prominence is returned encoding left(negative) or right(positive)
 %        promIdx --> indices of elements in y belonging to the prominence values in array prom
 %
 %
@@ -36,8 +40,8 @@ if (nargin < 7); infVal = x(end)-x(1); end
 
 % if qiy is a vector, call self multiple times - not time optimal, as we could store the window calculation
 if ~isscalar(qiy)
-   if (type<0), y = -y; end                      % manually inverse y signal here instead within every sub-call
-   [prom, promIdx] = arrayfun(@(i) calcProm(x,y,i,w,+1,dir,infVal), qiy);  % always use positive direction in sub-call
+   if (type<0), y = -y; type = +1; end                    % manually inverse y signal here instead within every sub-call
+   [prom, promIdx] = arrayfun(@(i) calcProm(x,y,i,w,type,dir,infVal), qiy);  % always use positive direction in sub-call
    return
 end
 
@@ -72,6 +76,9 @@ if ~isempty(promNegIdx), promNegIdx = promNegIdx + (xiL - 1); end
 % assemble result
 prom    = [promPos   , promNeg   ];
 promIdx = [promPosIdx, promNegIdx];
+% only keep maximum absolute value
+[prom, sel] = max(abs(prom));
+promIdx = promIdx(sel);
 
 
 end % of function

@@ -3,9 +3,10 @@ function clearedOptions = olRemoveOption(optionlist, varargin)
    %
    % Removes specified properties/options (and the associated value) from optionlist.
    %
-   % INPUT:    optionlist --> a cell array of key-value-pairs
-   %                nameN --> keys to be removed
-   % OUPUT: cleardoptions --> processed optionlist
+   % INPUT:      optionlist --> a cell array of key-value-pairs
+   %                  nameN --> keys to be removed
+   %
+   % OUTPUT: clearedoptions --> processed optionlist
    %
    % Author: Andreas Sommer, Sep2016, Jul2024
    % andreas.sommer@iwr.uni-heidelberg.de

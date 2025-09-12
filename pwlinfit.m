@@ -1,6 +1,7 @@
-function [result, optinfo] = pwlinfit(xdata, ydata, n, varargin)
+function [result, optinfo] = pwlinfit(xdata, ydata, varargin)
 % NOTE:  This function is not yet in fully functional form.
 %
+% [result, optinfo] = pwlinfit(x, y, ...)
 % [result, optinfo] = pwlinfit(x, y, n, ...)
 %
 % Best fit of a continuous piecewise linear function consisting of n pieces
@@ -8,13 +9,14 @@ function [result, optinfo] = pwlinfit(xdata, ydata, n, varargin)
 %
 % INPUT:    x --> x values    [UPCOMING: evaluation points or span/interval]
 %           y --> y values    [UPCOMING: function ]
-%           n --> number of linear pieces
-%         ... --> key value pairs
-%                 'optimize' --> value one of 'x', 'y', 'both' [default]
+%           n --> number of linear pieces (can alternatively be given as key-value-argument 'n')
+%         ... --> key-value-pairs
+%                        'n' --> number of linear pieces
 %                   'xknots' --> initial grid of x points (equidistant if not specified)
-%               'continuous' --> true or false      [ UPCOMING -- currently always true ]
 %                'optimizer' --> can be 'lsqnonlin' (requires optimization toolbox)
 %                'optimopts' --> optimopts structure passed to the optimizer
+%                 'optimize' --> value one of 'x', 'y', 'both'    [ UPCOMING -- not yet implemented   ]
+%               'continuous' --> true or false                    [ UPCOMING -- currently always true ]
 %
 % OUTPUT:   result --> structure with fields:
 %                      xknots --> x values of piecewise linear approximation
@@ -41,16 +43,30 @@ function [result, optinfo] = pwlinfit(xdata, ydata, n, varargin)
 % 2. Fall: y is fhandle
 
 
-% process args - olGetOption returns in args the remaining arguments
+% check if number of linear pieces is specifed (required argument)
 args = varargin;
+if ~isempty(args) && isnumeric(args{1})  % user specified n directly, add it to the argument list
+   args = ['n', args];
+end
+
+% calculate a default xmindist
+default_xmindist = @() 1e-10 * (xdata(end)-xdata(1));
+
+% process args - olGetOption returns in args the remaining arguments
+[n        , args] = olGetOption(args, 'n'        , []);
 [xknots   , args] = olGetOption(args, 'xknots'   , []);
-[xmindist , args] = olGetOption(args, 'xmindist' , 10);
-[optimizer, args] = olGetOption(args, 'optimizer', @lsqnonlin);
+[xmindist , args] = olGetOption(args, 'xmindist' , default_xmindist, true); % evaluate if not given
+[optimizer, args] = olGetOption(args, 'optimizer', 'lsqnonlin');
 [optimopts, args] = olGetOption(args, 'optimopts', {});
 
 % check all args processed
 if ~isempty(args)
    warning('PWLINFIT:UNKNOWN_ARGS', 'Ignoring unknown arguments: %s', sprintf('%s ', args{1:2:end}));
+end
+
+% no n specified? error!
+if ~isnumeric(n) || isempty(n) || (n <= 0)
+   error('Number of pieces "n" must be specified!');
 end
 
 % if no initial grid specified, use equidistantly sampled xdata
@@ -83,9 +99,13 @@ else
    yknots = yfun(xknots);
 end
 
-% quick and dirty: use lsqnonlin
+% ensure optmizer is a char array
+if isa(optimizer, 'function_handle')
+   optimizer = func2str(optimizer);
+end
 
-switch lower(func2str(optimizer))
+% select optimizer
+switch lower(optimizer)
 
    case 'lsqnonlin'
 
@@ -113,7 +133,7 @@ switch lower(func2str(optimizer))
 end
 
 
-% assemboe output
+% assemble output
 [xknots, yknots] = getKnots(x, xknots);
 result.xknots = xknots;
 result.yknots = yknots;

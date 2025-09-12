@@ -47,12 +47,8 @@ args = varargin;
 [relProm        , args] = olGetOption(args, 'relProm'        , false);
 [mostProminent  , args] = olGetOption(args, 'mostProminent'  , 0    );
 
-
 % arguments left?
-if ~isempty(args)
-   warnID = strcat(mfilename(), ':UNKNOWN_ARGUMENTS');
-   warning(warnID, 'Unknown arguments: %s', sprintf('%s ', args{1:2:end}));
-end
+olWarnIfNotEmpty(args, true)
 
 % output arguments determine what to compute
 calculate_valPeaks = (nargout >= 2) || ~isempty(sortOrder); % sorting requires peak values 
@@ -127,8 +123,12 @@ if (mostProminent ~= 0)
    % % % promsL = calcProm(xExtrema, yExtrema, iExtrema, [], 0, -1);
    % % % promsR = calcProm(xExtrema, yExtrema, iExtrema, [], 0, +1);
    % % % proms = abs(proms); % calcProm encodes left/right prominence info with +/- sign
+   % 
    [~, sortIdx ] = sort(abs(proms), 'descend');
-   idxExtrema = idxExtrema( sortIdx(1:min(end, abs(mostProminent))) );
+   sortIdx = sortIdx(1:min(end, abs(mostProminent)));      % extract most prominent ones
+   sortIdx = sort(sortIdx, 'ascend');            % re-sort the most prominent ones by increasing index
+   idxExtrema = idxExtrema( sortIdx );           % store the idxExtrema in position-increasing order
+   % idxExtrema = idxExtrema( sortIdx(1:min(end, abs(mostProminent))) );
 end
 
 
@@ -186,15 +186,15 @@ end % of function
 
 
 %% HELPERS
-function idx = detectSlope(sig, dir, slope)
-   if (dir > 0)
-      idx = sig > slope;   % this detects all rising points, but not the last point in the sequence
-   else
-      idx = sig < -slope;  % same with falling points
-   end
-   incidx = [diff(idx)<0 , false];  % add last point of rising/falling sequence
-   idx(incidx) = true;
-end
+% function idx = detectSlope(sig, dir, slope)
+%    if (dir > 0)
+%       idx = sig > slope;   % this detects all rising points, but not the last point in the sequence
+%    else
+%       idx = sig < -slope;  % same with falling points
+%    end
+%    incidx = [diff(idx)<0 , false];  % add last point of rising/falling sequence
+%    idx(incidx) = true;
+% end
 
 
 function idxStrictExtrema = removeNonStrictExtrema(signal, idxExtrema, tol)
