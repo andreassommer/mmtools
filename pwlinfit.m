@@ -12,7 +12,8 @@ function [result, optinfo] = pwlinfit(xdata, ydata, varargin)
 %           n --> number of linear pieces (can alternatively be given as key-value-argument 'n')
 %         ... --> key-value-pairs
 %                        'n' --> number of linear pieces
-%                   'xknots' --> initial grid of x points (equidistant if not specified)
+%                    'knots' --> initial grid of x points (equidistant if not specified)
+%                  'mindist' --> minimum distance of x knots
 %                'optimizer' --> can be 'lsqnonlin' (requires optimization toolbox)
 %                'optimopts' --> optimopts structure passed to the optimizer
 %                 'optimize' --> value one of 'x', 'y', 'both'    [ UPCOMING -- not yet implemented   ]
@@ -50,12 +51,12 @@ if ~isempty(args) && isnumeric(args{1})  % user specified n directly, add it to 
 end
 
 % calculate a default xmindist
-default_xmindist = @() 1e-10 * (xdata(end)-xdata(1));
+default_mindist = @() 1e-10 * (xdata(end)-xdata(1));
 
 % process args - olGetOption returns in args the remaining arguments
 [n        , args] = olGetOption(args, 'n'        , []);
-[xknots   , args] = olGetOption(args, 'xknots'   , []);
-[xmindist , args] = olGetOption(args, 'xmindist' , default_xmindist, true); % evaluate if not given
+[knots    , args] = olGetOption(args, 'knots'    , []);
+[mindist  , args] = olGetOption(args, 'mindist'  , default_mindist, true);  % evaluate by formula if not given
 [optimizer, args] = olGetOption(args, 'optimizer', 'lsqnonlin');
 [optimopts, args] = olGetOption(args, 'optimopts', {});
 
@@ -70,33 +71,33 @@ if ~isnumeric(n) || isempty(n) || (n <= 0)
 end
 
 % if no initial grid specified, use equidistantly sampled xdata
-if isempty(xknots)
-   xknots = linspace(xdata(1), xdata(end), n+1);
+if isempty(knots)
+   knots = linspace(xdata(1), xdata(end), n+1);
 end
 
 % if x is a 2-point vector, fill it with 
-if length(xknots) == 2
-   xknots = linspace(xknots(1), xknots(end), n+1);
+if length(knots) == 2
+   knots = linspace(knots(1), knots(end), n+1);
 end
 
 % if y is a function, store the handle separately
 yfun = [];
 if isa(ydata, 'function_handle')
    yfun = ydata;
-   ydata = yfun(xknots);  %% Should have a flag if yfun can handle vectors or must be evaluated using arrayfun
+   ydata = yfun(knots);  %% Should have a flag if yfun can handle vectors or must be evaluated using arrayfun
 end
 
 % ensure data range is inside knot range
-if (xdata(1) < xknots(1)) || (xdata(end) > xknots(end))
+if (xdata(1) < knots(1)) || (xdata(end) > knots(end))
    warning('PWLINFIT:DATA_OUTSIDE_KNOTS', 'xdata range [%g %g] exceeds knot range [%g %g]', ...
-      xdata(1), xdata(end), xknots(1), xknots(end));
+      xdata(1), xdata(end), knots(1), knots(end));
 end
 
 % initial guess for y values
 if isempty(yfun)
-   yknots = interp1(xdata, ydata, xknots);
+   yknots = interp1(xdata, ydata, knots);
 else
-   yknots = yfun(xknots);
+   yknots = yfun(knots);
 end
 
 % ensure optmizer is a char array
@@ -112,10 +113,10 @@ switch lower(optimizer)
       % Ensure that xknots is always monotonically increasing knot vector
       % by using non-negative "increments" as optimization variables
       % Then:  xknot = xmin + cumsum(increments)
-      xinc = diff(xknots(1:end-1));   % then xinc >= 0 and xknot = xknot(1) + xinc;
+      xinc = diff(knots(1:end-1));   % then xinc >= 0 and xknot = xknot(1) + xinc;
       x0 = [xinc, yknots];
-      h  = xknots(end)-xknots(1);
-      lb = [xmindist + zeros(numel(xinc), 1)  ; -inf(numel(yknots), 1)  ];
+      h  = knots(end)-knots(1);
+      lb = [ mindist + zeros(numel(xinc), 1)  ; -inf(numel(yknots), 1)  ];
       ub = [        h * ones(numel(xinc), 1)  ; +inf(numel(yknots), 1)  ];
       fun = @minFunXY;
       opts = optimoptions(@lsqnonlin, 'Algorithm', 'Levenberg-Marquardt'  ...
@@ -134,8 +135,8 @@ end
 
 
 % assemble output
-[xknots, yknots] = getKnots(x, xknots);
-result.xknots = xknots;
+[knots, yknots] = getKnots(x, knots);
+result.xknots = knots;
 result.yknots = yknots;
 
 % figure(555); clf; hold on; plot(xknot, yknot, 'r.', 'MarkerSize', 10); plot(datax, datay, 'g.', 'MarkerSize', 2);
@@ -158,7 +159,7 @@ end
 
 function rv = minFunXY(z)
    % split z into inc_x and knot_y part
-   [kx, ky] = getKnots(z, xknots);
+   [kx, ky] = getKnots(z, knots);
    % transform increments into knots
    rv = calcResvec(kx, ky, xdata, ydata);
 end
