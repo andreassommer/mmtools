@@ -1,12 +1,19 @@
-function s = makeNestedStruct(s, names, values, splitter)
-% s = makeNestedStruct(s, names, values, splitter)
+function s = makeNestedStruct(s, splitter, varargin)
+% 1) s = makeNestedStruct(s, splitter, names, values )
+% 2) s = makeNestedStruct(s, splitter[, nameX, valueX]* )
 %
 % Transforms tokenizable strings in nested structure and assigns values.
 %
-% INPUT:    s --> initial struct to be modified or []
+% INPUT SYNTAX 1)
+%           s --> initial struct to be modified or []
+%    splitter --> string used as splitter to tokenize
 %       names --> cell array of tokenizable strings to be processed
 %      values --> cell array of values to be assigned
-%    splitter --> string used as splitter to tokenize
+%
+% INPUT SYNTAX 2)
+%                  s --> initial struct to be modified or []
+%           splitter --> string used as splitter to tokenize
+%   [nameX, valueX]* --> name-value-pairs of tokenizable strings and associated value
 %
 % OUTPUT    s --> modified structure with nested structs/fields
 %
@@ -42,11 +49,32 @@ function s = makeNestedStruct(s, names, values, splitter)
 % code@andreas-sommer.eu
 
 
+% quick return if nothing to do
+if (nargin <= 2), return; end
+
+% check which syntax is used
+if iscell(varargin{1})
+   names  = varargin{1};
+   values = varargin{2};
+else
+   names  = varargin(1:2:end);
+   values = varargin(2:2:end);
+end
+
+% error if not having right format
+if ~iscell(names) || ~iscell(values)
+   error('Invalid call. See documentation for proper usage.')
+end
+
+% quick return if nothing to do
+if length(names) == 0, return; end
+
 % allow using [] als initializer
 if ~isstruct(s) && isempty(s)
    s = struct();
 end
-% walk through names
+
+% DO THE WORK: walk through names
 for i = 1:numel(names)
    parts = strsplit(names{i}, splitter);
    currStruct = s;
