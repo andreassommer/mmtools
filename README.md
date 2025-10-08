@@ -33,6 +33,7 @@ Tools marked with ⭐ might be especially worth a look.
 * [istext](#istext)             - Check if variable is a char array or a string             [[->code]](/istext.m)
 * [makeClosure](#makeClosure)   - Mimick pass-by-reference via closure                      [[->code]](/makeClosure.m)
 * [makeMessage](#makeMessage)   - Message generating with preponed Caller                   [[->code]](/makeMessage.m)
+* [makeNestedStruct](#makeNestedStruct)  - Generate nested struct from tokenizable string   [[->code]](/makeNestedStruct.m)
 * [msession⭐](#msession)       - Store and retrieve Matlab sessions (open files, work space variables, etc.) [[->code]](/msession.m)
 * [optionlists⭐](#optionlists) - Handle name-value pairs                                   [[->code]](/olGetOption.m)
 * [pointpicker](#pointpicker)   - Pick and collect coordinates by clicking in figure        [[->code]](/pointpicker.m)
@@ -252,6 +253,28 @@ makeMessage is a wrapper around Matlab's *printf functions, but accepts also oth
 printer functions that follow the sprintf or fprintf API.
 
 [Return to list of tools](#list-of-tools)
+
+
+
+<a name="makeNestedStruct"></a>
+<a id="makeNestedStruct"></a>
+## makeNestedStruct   [[see code]](/makeNestedStruct.m)
+
+Generates/extends a nested struct by tokenizable strings.  
+Example:
+```matlab
+    names = { "aaa::bbb::ccc", "aaa::bbb:ddd", "aaa::ddd", "eee" };
+   values = {              42, 'hi there'    , 'hello'   , pi    };
+        s = makeNestedStruct([], names, values, '::');
+```
+This will create a structure with the following layout:  
+`s.aaa.bbb.ccc = 42`  
+`s.aaa.bbb.ddd = 'hi there'`  
+`s.aaa.ddd     = 'hello'`  
+`s.eee         = 3.141569`  
+
+[Return to list of tools](#list-of-tools)
+
 
 
 
