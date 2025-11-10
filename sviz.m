@@ -61,9 +61,9 @@ function h = addVisualizerToPanel(parent, datnames, handles)
    set(h.btn  , 'UserData', h);
    set(h.xmenu, 'UserData', h);
    set(h.ymenu, 'UserData', h);
-   % remove axis toolbar
+   % add axis toolbar
    h.axtb = axtoolbar('default'); 
-   h.axtb.Visible = 'off';
+   h.axtb.Visible = 'on';
    h.ax.Toolbar = h.axtb;
 end
 

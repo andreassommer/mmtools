@@ -1,21 +1,31 @@
-function dependencies = whichToolboxFor(mfile)
-% dep = whichToolboxFor(mfile)
+function dependencies = whichToolboxFor(mfile_or_function)
+% dep = whichToolboxFor(mfile_or_function)
 %
 % Retrieves the required Matlab Toolboxes for specified mfile.
 % Also inspects all files invoked by mfile and checks their dependency.
 %
-% INP    mfile --> file to be scanned
+% INPUT:      mfile --> file to be scanned
+%    or:   function --> function handle (the mfile will be retrieved)
 %
-% OUTPUT:  dep --> structure containing scanned dependency data
+% OUTPUT:       dep --> structure containing scanned dependency data
 %
 % NOTE: This function will output two lists:
 %       1)  FILE:  mfile   -> lists all required toolboxes for specified mfile
 %       2)  TOOLBOX:  tb   -> for every required toolbox, a list of files that 
 %                             requires them is printed
 %
+% Example:  whichToolboxFor(@lsqnonlin)
+%
 % Andreas Sommer, Jul2024
 % code@andreas-sommer.eu
 %
+
+% check if we were given a function handle
+if isa(mfile_or_function, 'function_handle')
+   mfile = which(func2str(mfile_or_function));
+else
+   mfile = mfile_or_function;
+end
 
 % little error check
 if ~exist(mfile, 'file')
