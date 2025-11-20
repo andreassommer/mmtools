@@ -37,7 +37,7 @@ end
 handles.panel1 = uipanel(handles.figure, 'Title', '', 'Background', 'white', 'Position', [0.0 0.0 1.0 0.5] );
 handles.panel2 = uipanel(handles.figure, 'Title', '', 'Background', 'white', 'Position', [0.0 0.5 1.0 0.5] );
 
-% link axes if same x
+% add visualization panels
 handles.h1 = addVisualizerToPanel(handles.panel1, datnames, handles);
 handles.h2 = addVisualizerToPanel(handles.panel2, datnames, handles);
 
@@ -62,9 +62,8 @@ function h = addVisualizerToPanel(parent, datnames, handles)
    set(h.xmenu, 'UserData', h);
    set(h.ymenu, 'UserData', h);
    % add axis toolbar
-   h.axtb = axtoolbar('default'); 
-   h.axtb.Visible = 'on';
-   h.ax.Toolbar = h.axtb;
+   h.ax.Toolbar = axtoolbar(h.ax, 'default'); 
+   h.ax.Visible = 'on';
 end
 
 %button callback
@@ -72,9 +71,9 @@ function plotbutton_callback(h, event)
    hlist = h.UserData;
    xName = hlist.xmenu.String{hlist.xmenu.Value};
    yName = hlist.xmenu.String{hlist.ymenu.Value};
-   ax = hlist.ax;
    x = datstruct.(xName);
    y = datstruct.(yName);
+   cla(hlist.ax, 'reset');
    plot(hlist.ax, x, y, 'b.');
    % second datstruct specified?
    if ~isempty(datstruct2)
@@ -87,8 +86,13 @@ function plotbutton_callback(h, event)
    end
    % format
    ytickformat(hlist.ax, '%9.3g');
-   % link axes 
-   linkaxes([handles.h1.ax handles.h2.ax], 'x')
+   xlim(hlist.ax, 'tight');
+   % link axes only if both have the same limits
+   if all(xlim(handles.h1.ax)==xlim(handles.h2.ax))
+      linkaxes([handles.h1.ax handles.h2.ax], 'x')
+   else
+      linkaxes([handles.h1.ax handles.h2.ax], 'off')
+   end
 end
 
 

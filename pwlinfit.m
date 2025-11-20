@@ -218,8 +218,9 @@ function fval = minFunXYpenalized(z)
    [kx, ky] = getKnots(z, xknots);               % split z into inc_x and knot_y part
    n_incs = (length(xknots)-2);                  % number of increments (knot variables)
    incs   = z(1:n_incs);                        % increments (knot variables)
-   rv = calcResVec(kx, ky, xdata, ydata);       % get the residual vector
-   rn = norm(rv);                               % residual norm
+   % rv = calcResVec(kx, ky, xdata, ydata);       % get the residual vector
+   % rn = norm(rv);                               % residual norm
+   rn = calcResValue(kx, ky, xdata, ydata);       % get the residual vector
    penalty = 0;                                 % initialize penalty
    if any(incs < mindist)
       penalty = sum( max(0, mindist - incs).^2 );  % penalty when approaching mindist
@@ -262,37 +263,51 @@ end
 
 
 
+function resval = calcResValue(knot_x, knot_y, data_x, data_y)
+   resval = 0;
+   ki = 2;
+   xl = knot_x(ki-1); % current  left x knot value
+   xr = knot_x(ki);   % current right x knot value
+   yr = knot_y(ki-1); % current right y knot value
+   for i = 1:length(data_x)
+      x = data_x(i);
+      % step forward the current interval if needed
+      if (x > xr)
+         ki = ki + 1;
+         xl = xr;
+         xr = knot_x(ki);
+      end
+      yl = knot_y(ki-1);
+      yr = knot_y(ki);
+      resval = resval + abs( data_y(i) - ( yl + (yr - yl) / (xr - xl) * (x - xl) ) );
+   end
+end
 
-% function z = ppLinVal(x, y, xq)
-%    %          f(x_i+1) - f(x_i)
-%    %  g(x) = ------------------- * (x - x_i) + f(x_i)  for x in [x_i  x_i+1]
-%    %            x_i+1  -  x_i
-%    %
-%    % x contains the x_i
-%    % y contains the f(x_i)
-%    % xq contains the query points (must be monotonic increasing)
-%    %
-%    LO = 1;               % lower index limit of xq belonging to current interval
-%    z  = zeros(size(xq)); % prepare output array
-%    xqlen = length(xq);
-%    % walk through intervals in x
-%    for i = 1:length(x)-1
-%       xi = x(i);   xip1 = x(i+1);
-%       yi = y(i);   yip1 = y(i+1);
-%       UP = findFirstGreater(xq, xip1, LO, xqlen+1) - 1;
-%       z(LO:UP) = (yip1 - yi) / (xip1 - xi) * (xq(LO:UP) - xi) + yi;
-%       LO = UP + 1;
-%       if (UP == xqlen), break, end  % all query points done
-%    end
-% end
-% 
-% 
-% % OLD VERSION -- takes 100% more runtime
-% function resvec = calcResvec_old(knot_x, knot_y, data_x, data_y)
-%    % calculate residual to linear fit (regression)
-%    y = ppLinVal(knot_x, knot_y, data_x);
-%    resvec = data_y - y;
-% end
+% Faster in profiler, but much slower when compiled
+function resvec = calcResVecXX(knot_x, knot_y, data_x, data_y)
+   resvec = zeros(size(data_x));
+   % first retrieve the entry points, so we can then vectorize on individual intervals
+   next_knot_idx = 2;
+   next_knot_val = knot_x(next_knot_idx);
+   dl = 1;  % data left idx
+   for i = 1:length(data_x)
+      if data_x(i) > next_knot_val
+         yl = knot_y(next_knot_idx-1);   yr = knot_y(next_knot_idx);
+         xl = knot_x(next_knot_idx-1);   xr = knot_x(next_knot_idx);
+         idx = dl:i;
+         resvec(idx) = data_y(idx) - ( yl + (yr - yl) / (xr - xl) * (data_x(idx) - xl) );
+         dl = i+1;
+         next_knot_idx = next_knot_idx + 1;
+         next_knot_val = knot_x(next_knot_idx);
+      end
+   end
+   % last interval
+   yl = knot_y(next_knot_idx-1);   yr = knot_y(next_knot_idx);
+   xl = knot_x(next_knot_idx-1);   xr = knot_x(next_knot_idx);
+   idx = dl:length(data_x);
+   resvec(idx) = data_y(idx) - ( yl + (yr - yl) / (xr - xl) * (data_x(idx) - xl) );
+end
+
 
 
 %%% -- CALCULATE RESIDUAL VECTOR
@@ -397,4 +412,37 @@ end
 %    newnodes        = nodes;
 %    newnodes(2:n-1) = nodes(2:n-1) + s';
 % 
+% end
+
+
+
+% function z = ppLinVal(x, y, xq)
+%    %          f(x_i+1) - f(x_i)
+%    %  g(x) = ------------------- * (x - x_i) + f(x_i)  for x in [x_i  x_i+1]
+%    %            x_i+1  -  x_i
+%    %
+%    % x contains the x_i
+%    % y contains the f(x_i)
+%    % xq contains the query points (must be monotonic increasing)
+%    %
+%    LO = 1;               % lower index limit of xq belonging to current interval
+%    z  = zeros(size(xq)); % prepare output array
+%    xqlen = length(xq);
+%    % walk through intervals in x
+%    for i = 1:length(x)-1
+%       xi = x(i);   xip1 = x(i+1);
+%       yi = y(i);   yip1 = y(i+1);
+%       UP = findFirstGreater(xq, xip1, LO, xqlen+1) - 1;
+%       z(LO:UP) = (yip1 - yi) / (xip1 - xi) * (xq(LO:UP) - xi) + yi;
+%       LO = UP + 1;
+%       if (UP == xqlen), break, end  % all query points done
+%    end
+% end
+% 
+% 
+% % OLD VERSION -- takes 100% more runtime
+% function resvec = calcResvec_old(knot_x, knot_y, data_x, data_y)
+%    % calculate residual to linear fit (regression)
+%    y = ppLinVal(knot_x, knot_y, data_x);
+%    resvec = data_y - y;
 % end
