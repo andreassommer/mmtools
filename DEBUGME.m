@@ -57,6 +57,7 @@ if ischar(value) && value(1)=='#'
       case '#echo%g',   DEBUGME('#setmessage', 'DEBUGME(%g)');
       case '#printer'
          if isa(message, 'function_handle')
+            value = printer;  % return old printer as value
             printer = message;
          end
       case '#setmessage'
