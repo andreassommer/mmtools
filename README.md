@@ -2,7 +2,7 @@
 
 A collection of free and open source Matlab tools.
 
-Andreas Sommer, 2010-2024  
+Andreas Sommer, 2010-2026  
 E-Mail: code@andreas-sommer.eu  
 
 &nbsp;
