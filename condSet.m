@@ -25,6 +25,8 @@ function z = condSet(condition, valTrue, valFalse, z)
 %   A cell output can be forced by giving suitable initial z: 
 %       z = condSet(condition, 1, 5, {})
 %
+% * condSet can be used as a ternary operator if z is specified as empty matrix []
+%
 % EXAMPLE CALLS:
 %   M = magic(5); R = -rand(5);         % matrices for testing
 %   z = condSet(M>10, 1, 5)             % --> matrix of size(M) with 1 where M>10, and 5 otherwise
@@ -33,16 +35,23 @@ function z = condSet(condition, valTrue, valFalse, z)
 %   z = condSet(M>10, 10, M)            % --> copy of M with value 10 where previously M>10
 %   z = condSet(M>10, @(x) x^2, -1, M)  % --> copy of M with squared entries where M>10, and -1 otherwise
 %   z = condSet(M>10, R, {}, M)         % --> copy of M with values from R where M>10
+%   z = condSet(tf, 'YES', @sin, [])    % --> returns 'YES' if tf is true, otherwise @sin
 %
-% Andreas Sommer, Sep2024
+% Andreas Sommer, Sep2024, Jan2026
 % code@andreas-sommer.eu
 %
 
 % if only valTrue is specified, probably the user dont want to do assignments if cond is false
 if (nargin <= 2), valFalse = {}; end
 
+% special case: usage as ternary operator
+if (nargin >= 4 && isempty(z) && isnumeric(z) && isscalar(condition))
+   if condition, z = valTrue; else, z = valFalse; end
+   return;
+end
+
 % check if target is a cell array (either if z is cell, or valTrue or valFalse is not numeric)
-if ( (nargin >=4 && iscell(z)) || ~isnumeric(valTrue) || ~isnumeric(valFalse) )
+if ( (nargin >= 4 && iscell(z)) || ~isnumeric(valTrue) || ~isnumeric(valFalse) )
    targetIsCell = true;
 else 
    targetIsCell = false;

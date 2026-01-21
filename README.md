@@ -40,6 +40,7 @@ Tools marked with ⭐ might be especially worth a look.
 * [roundto](#roundto)           - Rounds values to nearest divisor value                    [[->code]](/roundto.m)
 * [stopOnKeyPress](#stopOnKeyPress)   - displays a stop figure that reacts on key press     [[->code]](/stopOnKeyPress.m)
 * [sviz](#sviz)                       - Simple visualizer                                         [[->code]](/sviz.m)
+* [truncate_arrays_in_struct](#tais)  - Truncate long array fields in a struct              [[->code]](/truncate_arrays_in_struct.m)
 * [whichToolboxFor](#whichToolboxFor) - Investigate toolbox dependency of code              [[->code]](/whichToolboxFor.m)
 
 Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`.
@@ -65,9 +66,10 @@ Computes the Adler32 hash of a given char array.
 <a id="condSet"></a>
 ## condSet   [[see code]](/condSet.m)
 
-Conditionally sets values in (cell) array/matrix/vector.
+Conditionally sets values in (cell) array/matrix/vector.  
 Can also evaluate function on the elements of a given (cell) array/matrix/vector at places where 
-the specified condition is true or false.
+the specified condition is true or false.  
+Can also be used as ternary operator if the last argument is an empty matrix (see last example)
 
 ```matlab
 % EXAMPLE CALLS:
@@ -78,6 +80,7 @@ z = condSet(M>10, '2BIG')           % --> cell array of size(M) with '2BIG' wher
 z = condSet(M>10, 10, M)            % --> copy of M with value 10 where M>10
 z = condSet(M>10, @(x) x^2, -1, M)  % --> copy of M with squared entries where M>10, and -1 otherwise
 z = condSet(M>10, R, {}, M)         % --> copy of M with values from R where M>10
+z = condSet(tf, 'YES', @sin, [])    % --> returns 'YES' if tf is true, otherwise @sin
 ```
 
 [Return to list of tools](#list-of-tools)
@@ -398,6 +401,19 @@ See the code for a detailed usage with example.
 # sviz   [[see code]](/sviz.m)
 
 Simple visualization tool. 
+
+[Return to list of tools](#list-of-tools)
+
+
+
+
+<a name="tais"></a>
+<a id="tais"></a>
+# truncate_arrays_in_struct   [[see code]](/truncate_arrays_in_struct.m)
+
+Truncates all arrays (also cell arrays) that are 1st level fields in a struct to specific indices.
+Scalar fields, chars or strings are left unmodified.
+Also arrays that do not have sufficient size are unmodified.
 
 [Return to list of tools](#list-of-tools)
 
