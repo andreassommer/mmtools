@@ -14,7 +14,8 @@ function [result, optinfo] = pwlinfit(xdata, ydata, varargin)
 %                        'n' --> number of linear pieces
 %                    'knots' --> initial grid of x points (equidistant if not specified)
 %                  'mindist' --> minimum distance of x knots
-%                'optimizer' --> can be 'lsqnonlin' (requires optimization toolbox)
+%                'optimizer' --> 'lsqnonlin'  (best performance, requires optimization toolbox)
+%                                'fminsearch' (slow but acceptable if a good initial guess is provided)
 %                'optimopts' --> optimopts structure passed to the optimizer
 %                 'optimize' --> value one of 'x', 'y', 'both'    [ UPCOMING -- not yet implemented   ]
 %               'continuous' --> true or false                    [ UPCOMING -- currently always true ]
@@ -24,7 +25,7 @@ function [result, optinfo] = pwlinfit(xdata, ydata, varargin)
 %                      yknots --> y values associated to x values
 %          optinfo --> optimization info (e.g. output from lsqnonlin)
 %
-% Andreas Sommer, Sep2024, Sep2025
+% Andreas Sommer, Sep2024, Sep2025, Jan2026
 % code@andreas-sommer.eu
 %
 
@@ -215,15 +216,15 @@ function fval = minFunXYpenalized(z)
    persistent nn                                    % call counter
    if isscalar(z) && (z==0), nn = 0; return, end    % init call counter
    nn = nn + 1;                                     % step call counter
-   [kx, ky] = getKnots(z, xknots);               % split z into inc_x and knot_y part
-   n_incs = (length(xknots)-2);                  % number of increments (knot variables)
-   incs   = z(1:n_incs);                        % increments (knot variables)
-   % rv = calcResVec(kx, ky, xdata, ydata);       % get the residual vector
-   % rn = norm(rv);                               % residual norm
-   rn = calcResValue(kx, ky, xdata, ydata);       % get the residual vector
-   penalty = 0;                                 % initialize penalty
+   [kx, ky] = getKnots(z, xknots);                  % split z into inc_x and knot_y part
+   n_incs = (length(xknots)-2);                     % number of increments (knot variables)
+   incs   = z(1:n_incs);                            % increments (knot variables)
+   % rv = calcResVec(kx, ky, xdata, ydata);         % get the residual vector
+   % rn = norm(rv);                                 % residual norm
+   rn = calcResValue(kx, ky, xdata, ydata);         % get the residual vector
+   penalty = 0;                                     % initialize penalty
    if any(incs < mindist)
-      penalty = sum( max(0, mindist - incs).^2 );  % penalty when approaching mindist
+      penalty = sum( max(0, mindist - incs).^2 );   % penalty when approaching mindist
    end
    fval = rn + penalty;
    if ~mod(nn, 1000), fprintf('Iteration #%3d:  fval = %10.6g  (%10.6g +  %10.6g penalty) \n', nn/1000, fval, rn, penalty); end
