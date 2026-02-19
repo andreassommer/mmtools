@@ -11,7 +11,7 @@ function [foundidx, foundflag] = findFirstSmallerRev(x, xq, idx, notFoundVal)
 % code@andreas-sommer.eu
 %
 
-% NOTE: Matlab's JIT makes the for loop very fast, no bound checks are done
+% NOTE: Matlab's JIT compiler makes the for loop very fast, no bound checks are done
 
 if (nargin < 4), notFoundVal = 0; end
 

@@ -18,7 +18,7 @@ function [foundidx, foundflag] = findFirstGreater(x, xq, idx, notFoundVal)
 % code@andreas-sommer.eu
 %
 
-% NOTE: Matlab's JIT makes the for loop very fast, no bound checks are done
+% NOTE: Matlab's JIT compiler makes the for loop very fast, no bound checks are done
 
 if (nargin < 4), notFoundVal = 0; end
 if (nargin < 3),         idx = 1; end

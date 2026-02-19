@@ -16,32 +16,36 @@ E-Mail: code@andreas-sommer.eu
 
 Tools marked with ⭐ might be especially worth a look.  
 
-* [ADLER32](#ADLER32)           - Compute Adler32 hash                                      [[->code]](/ADLER32.m)
-* [condSet](#condSet)           - Conditionally set values in (cell) array/matrix/vector    [[->code]](/condSet.m)
-* [DEBUGME](#DEBUGME)           - Debug marker/helper for changed values                    [[->code]](/DEBUGME.m)
-* [execWSL](#execWSL)           - Execute command in WSL (Windows Subsystem for Linux)      [[->code]](/execWSL.m)
-* [filecopy](#filecopy)         - Copy individual files                                     [[->code]](/filecopy.m)
-* [findfield](#findfield)       - Find field in struct by regular expressions               [[->code]](/findfield.m)
-* [findFirstGreater](#findFirstGreater)  - Finds first array entry greater than given value [[->code]](/findFirstGreater.m)
-* [getCaller](#getCaller)       - Retrieve calling function, file, line number              [[->code]](/getCaller.m)
-* [getParentFigure](#getParentFigure)           - Retrieve figure containing given handle   [[->code]](/getCaller.m)
-* [getWorkspaceVariable](#getWorkspaceVariable) - Retrieve variable from other workspace    [[->code]](/getWorkspaceVariable.m)
-* [hornereval](#hornereval)     - Evaluate 1d polynomial using Horner's scheme              [[->code]](/hornereval.m)
-* [hornereval2D](#hornereval2D) - Evaluate 2d polynomial using Horner's scheme              [[->code]](/hornereval2D.m)
-* [integrate_with_restarts⭐](#integrate_with_restarts) - Integrade implicitly switched ODE with state jumps [[->code]](/integrate_with_restarts.m)
-* [isfigure](#isfigure)         - Check if variable is handle to a figure                   [[->code]](/isfigure.m)
-* [istext](#istext)             - Check if variable is a char array or a string             [[->code]](/istext.m)
-* [makeClosure](#makeClosure)   - Mimick pass-by-reference via closure                      [[->code]](/makeClosure.m)
-* [makeMessage](#makeMessage)   - Message generating with preponed Caller                   [[->code]](/makeMessage.m)
-* [makeNestedStruct](#makeNestedStruct)  - Generate nested struct from tokenizable string   [[->code]](/makeNestedStruct.m)
-* [msession⭐](#msession)       - Store and retrieve Matlab sessions (open files, work space variables, etc.) [[->code]](/msession.m)
-* [optionlists⭐](#optionlists) - Handle name-value pairs                                   [[->code]](/olGetOption.m)
-* [pointpicker](#pointpicker)   - Pick and collect coordinates by clicking in figure        [[->code]](/pointpicker.m)
-* [roundto](#roundto)           - Rounds values to nearest divisor value                    [[->code]](/roundto.m)
-* [stopOnKeyPress](#stopOnKeyPress)   - displays a stop figure that reacts on key press     [[->code]](/stopOnKeyPress.m)
-* [sviz](#sviz)                       - Simple visualizer                                         [[->code]](/sviz.m)
-* [truncate_arrays_in_struct](#tais)  - Truncate long array fields in a struct              [[->code]](/truncate_arrays_in_struct.m)
-* [whichToolboxFor](#whichToolboxFor) - Investigate toolbox dependency of code              [[->code]](/whichToolboxFor.m)
+* [ADLER32](#ADLER32)                                    - Compute Adler32 hash                                             [[->code]](/ADLER32.m)
+* [condSet](#condSet)                                    - Conditionally set values in (cell) array/matrix/vector           [[->code]](/condSet.m)
+* [DEBUGME](#DEBUGME)                                    - Debug marker/helper for changed values                           [[->code]](/DEBUGME.m)
+* [execWSL](#execWSL)                                    - Execute command in WSL (Windows Subsystem for Linux)             [[->code]](/execWSL.m)
+* [filecopy](#filecopy)                                  - Copy individual files                                            [[->code]](/filecopy.m)
+* [findfield](#findfield)                                - Find field in struct by regular expressions                      [[->code]](/findfield.m)
+* [findFirstGreater](#findFirstGreater)                  - Finds first array entry greater than given value                 [[->code]](/findFirstGreater.m)
+* [findFirstGreaterRev](#findFirstGreater)               - Finds first array entry greater than given value (from end)      [[->code]](/findFirstGreaterRev.m)
+* [findFirstSmaller](#findFirstGreater)                  - Finds first array entry smaller than given value                 [[->code]](/findFirstSmaller.m)
+* [findFirstSmallerRev](#findFirstGreater)               - Finds first array entry smaller than given value (from end)      [[->code]](/findFirstSmallerRev.m)
+* [findNearestNeighbor](#findNearestNeighbor)            - So much more than just finding the nearest neighbor              [[->code]](/findNearestNeighbor.m)
+* [getCaller](#getCaller)                                - Retrieve calling function, file, line number                     [[->code]](/getCaller.m)
+* [getParentFigure](#getParentFigure)                    - Retrieve figure containing given handle                          [[->code]](/getCaller.m)
+* [getWorkspaceVariable](#getWorkspaceVariable)          - Retrieve variable from other workspace                           [[->code]](/getWorkspaceVariable.m)
+* [hornereval](#hornereval)                              - Evaluate 1d polynomial using Horner's scheme                     [[->code]](/hornereval.m)
+* [hornereval2D](#hornereval2D)                          - Evaluate 2d polynomial using Horner's scheme                     [[->code]](/hornereval2D.m)
+* [integrate_with_restarts⭐](#integrate_with_restarts)  - Integrate implicitly switched ODE with state jumps               [[->code]](/integrate_with_restarts.m)
+* [isfigure](#isfigure)                                  - Check if variable is handle to a figure                          [[->code]](/isfigure.m)
+* [istext](#istext)                                      - Check if variable is a char array or a string                    [[->code]](/istext.m)
+* [makeClosure](#makeClosure)                            - Mimick pass-by-reference via closure                             [[->code]](/makeClosure.m)
+* [makeMessage](#makeMessage)                            - Message generating with preponed Caller                          [[->code]](/makeMessage.m)
+* [makeNestedStruct](#makeNestedStruct)                  - Generate nested struct from tokenizable string                   [[->code]](/makeNestedStruct.m)
+* [msession⭐](#msession)                                - Store and retrieve Matlab sessions (open files, variables, etc.) [[->code]](/msession.m)
+* [optionlists⭐](#optionlists)                          - Handle name-value pairs                                          [[->code]](/olGetOption.m)
+* [pointpicker](#pointpicker)                            - Pick and collect coordinates by clicking in figure               [[->code]](/pointpicker.m)
+* [roundto](#roundto)                                    - Rounds values to nearest divisor value                           [[->code]](/roundto.m)
+* [stopOnKeyPress](#stopOnKeyPress)                      - displays a stop figure that reacts on key press                  [[->code]](/stopOnKeyPress.m)
+* [sviz](#sviz)                                          - Simple visualizer                                                [[->code]](/sviz.m)
+* [truncate_arrays_in_struct](#tais)                     - Truncate long array fields in a struct                           [[->code]](/truncate_arrays_in_struct.m)
+* [whichToolboxFor](#whichToolboxFor)                    - Investigate toolbox dependency of code                           [[->code]](/whichToolboxFor.m)
 
 Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`.
 
@@ -53,7 +57,7 @@ Documentation is provided inside the code and thus available using Matlab's help
 
 
 <a name="ADLER32"></a>
-<a id="ADLER32"></a>
+<a   id="ADLER32"></a>
 ## ADLER32   [[see code]](/ADLER32.m)
 
 Computes the Adler32 hash of a given char array.
@@ -63,7 +67,7 @@ Computes the Adler32 hash of a given char array.
 
 
 <a name="condSet"></a>
-<a id="condSet"></a>
+<a   id="condSet"></a>
 ## condSet   [[see code]](/condSet.m)
 
 Conditionally sets values in (cell) array/matrix/vector.  
@@ -88,7 +92,7 @@ z = condSet(tf, 'YES', @sin, [])    % --> returns 'YES' if tf is true, otherwise
 
 
 <a name="DEBUGME"></a>
-<a id="DEBUGME"></a>
+<a   id="DEBUGME"></a>
 ## DEBUGME   [[see code]](/DEBUGME.m)
 
 Debug helper for changed valued. It transparently returns the new value while displaying as message about that.  
@@ -108,7 +112,7 @@ Special command initiated with `#` allow configuration of debug output.
 
 
 <a name="execWSL"></a>
-<a id="execWSL"></a>
+<a   id="execWSL"></a>
 ## execWSL   [[see code]](/execWSL.m)
 
 Executes a command in WSL (Windows Subsystem for Linux).  
@@ -119,7 +123,7 @@ Distribution can be chosen. Dryrun and echoing supported.
 
 
 <a name="filecopy"></a>
-<a id="filecopy"></a>
+<a   id="filecopy"></a>
 ## filecopy   [[see code]](/filecopy.m)
 
 Copy individual files in an operating system independent way.
@@ -131,7 +135,7 @@ but creates the destination file with the current user's permission set.
 
 
 <a name="findfield"></a>
-<a id="findfield"></a>
+<a   id="findfield"></a>
 ## findfield   [[see code]](/findfield.m)
 
 In a struct with many (several hundreds) of fields, finding the correct field name can be cumbersome.
@@ -142,19 +146,34 @@ and also provides information if an exact match is found.
 
 
 
-<a name="findFirstGreater"></a>
-<a id="findFirstGreater"></a>
-## findFirstGreater   [[see code]](/findFirstGreater.m)
+<a name="findFirstGreater"></a><a name="findFirstGreaterRev"></a><a name="findFirstSmaller"></a><a name="findFirstSmallerRev"></a>
+<a   id="findFirstGreater"></a><a   id="findFirstGreaterRev"></a><a   id="findFirstSmaller"></a><a   id="findFirstSmallerRev"></a>
+## findFirstGreater [[see code]](/findFirstGreater.m) | findFirstGreaterRev [[see code]](/findFirstGreaterRev.m) | findFirstSmaller [[see code]](/findFirstSmaller.m) findFirstSmallerRev [[see code]](/findFirstSmallerRev.m)
 
-Firns first entry in array that is greater than a specified value.
+Firns first entry in array that is greater or smaller than a specified value, searching from beginning or from the end (reversed).  
 Optionally starts search at given index.
 
 [Return to list of tools](#list-of-tools)
 
 
 
+<a name="findNearestNeighbor"></a>
+<a   id="findNearestNeighbor"></a>
+## findNearestNeighbor   [[see code]](/findNearestNeighbor.m)
+
+Searches an array x for nearest neighbors of query values xq and returns indices and values (vectorized!).
+
+The user can choose the type of "neighbor": the closest, the next smallest, or the next greatest value.  
+If a query value is outside the range of the values in x, either the closest value in the array or an error marker can be returned upon user choice.  
+Pre-sorted search arrays are used for performance. On unsorted arrays x and/or xq, when querying multiple values xq, the arrays x and/or xq are sorted
+first and the sorted arrays may be delivered upon request. When querying a single value xq in an unsorted array x, no presort is done.
+
+[Return to list of tools](#list-of-tools)
+
+
+
 <a name="hornereval"></a>
-<a id="hornereval"></a>
+<a   id="hornereval"></a>
 ## hornereval   [[see code]](/hornereval.m)
 
 Evaluation of 1d polynomials using Horner's scheme.
@@ -164,7 +183,7 @@ Evaluation of 1d polynomials using Horner's scheme.
 
 
 <a name="hornereval2D"></a>
-<a id="hornereval2D"></a>
+<a   id="hornereval2D"></a>
 ## hornereval2D   [[see code]](/hornereval2D.m)
 
 Evaluation of 2d polynomials using Horner's scheme.
@@ -174,7 +193,7 @@ Evaluation of 2d polynomials using Horner's scheme.
 
 
 <a name="getCaller"></a>
-<a id="getCaller"></a>
+<a   id="getCaller"></a>
 ## getCaller   [[see code]](/getCaller.m)
 
 Retrieve calling function, optionally with file name and line number.
@@ -185,7 +204,7 @@ Relies on Matlab's dbstack.
 
 
 <a name="getParentFigure"></a>
-<a id="getParentFigure"></a>
+<a   id="getParentFigure"></a>
 ## getParentFigure   [[see code]](/getParentFigure.m)
 
 Retrieve the handle of the figure that contains the specified graphics handle.
@@ -195,7 +214,7 @@ Retrieve the handle of the figure that contains the specified graphics handle.
 
 
 <a name="getWorkspaceVariable"></a>
-<a id="getWorkspaceVariable"></a>
+<a   id="getWorkspaceVariable"></a>
 ## getWorkspaceVariable   [[see code]](/getWorkspaceVariable.m)
 
 Retrieve a variable from other workspace (base or caller), with optional not-found value and error signaling capability.
@@ -205,7 +224,7 @@ Retrieve a variable from other workspace (base or caller), with optional not-fou
 
 
 <a name="integrate_with_restarts"></a>
-<a id="integrate_with_restarts"></a>
+<a   id="integrate_with_restarts"></a>
 ## integrate_with_restarts⭐   [[see code]](/integrate_with_restarts.m)
 
 A Matlab tool for integration of switched ODEs, with implicit (state-dependent) model and state changes.  
@@ -218,7 +237,7 @@ It generates switching functions automatically from existing code with IF statem
 
 
 <a name="isfigure"></a>
-<a id="isfigure"></a>
+<a   id="isfigure"></a>
 ## isfigure   [[see code]](/isfigure.m)
 
 Queries if specified handle refers to a (valid) figure.
@@ -228,7 +247,7 @@ Queries if specified handle refers to a (valid) figure.
 
 
 <a name="istext"></a>
-<a id="istext"></a>
+<a   id="istext"></a>
 ## istext   [[see code]](/istext.m)
 
 Checks if specified object is a char array or a string
@@ -238,7 +257,7 @@ Checks if specified object is a char array or a string
 
 
 <a name="makeClosure"></a>
-<a id="makeClosure"></a>
+<a   id="makeClosure"></a>
 ## makeClosure   [[see code]](/makeClosure.m)
 
 Generates a closure to mimick pass-by-reference style of programming.
@@ -248,7 +267,7 @@ Generates a closure to mimick pass-by-reference style of programming.
 
 
 <a name="makeMessage"></a>
-<a id="makeMessage"></a>
+<a   id="makeMessage"></a>
 ## makeMessage   [[see code]](/makeMessage.m)
 
 Display or generate message and prepone the calling function. 
@@ -260,7 +279,7 @@ printer functions that follow the sprintf or fprintf API.
 
 
 <a name="makeNestedStruct"></a>
-<a id="makeNestedStruct"></a>
+<a   id="makeNestedStruct"></a>
 ## makeNestedStruct   [[see code]](/makeNestedStruct.m)
 
 Generates/extends a nested struct by tokenizable strings.  
@@ -282,7 +301,7 @@ This will create a structure with the following layout:
 
 
 <a name="msession"></a>
-<a id="msession"></a>
+<a   id="msession"></a>
 # msession⭐   [[see code]](/msession.m)
 
 Stores a whole Matlab work session in a file, and restores it upon request.
@@ -296,7 +315,7 @@ The user can select what to be stored:
 
 
 
-<a id="optionlists"></a>
+<a   id="optionlists"></a>
 <a name="optionlists"></a>
 # optionlists⭐   [[see code]](/olGetOption.m)
 
@@ -354,7 +373,7 @@ using `olWarnIfNotEmpty`.
 
 
 
-<a id="pointpicker"></a>
+<a   id="pointpicker"></a>
 <a name="pointpicker"></a>
 ## pointpicker   [[see code]](/pointpicker.m)
 
@@ -371,7 +390,7 @@ Collected points may be retrieved into a variable by `points = pointpicker('#GET
 
 
 
-<a id="roundto"></a>
+<a   id="roundto"></a>
 <a name="roundto"></a>
 ## roundto   [[see code]](/roundto.m)
 
@@ -384,7 +403,7 @@ See roundto_example.m for an example.
 
 
 <a name="stopOnKeyPress"></a>
-<a id="stopOnKeyPress"></a>
+<a   id="stopOnKeyPress"></a>
 # stopOnKeyPress   [[see code]](/stopOnKeyPress.m)
 
 Opens a figure that listens to key pressed and checks if a stop key is hit.
@@ -397,7 +416,7 @@ See the code for a detailed usage with example.
 
 
 <a name="sviz"></a>
-<a id="sviz"></a>
+<a   id="sviz"></a>
 # sviz   [[see code]](/sviz.m)
 
 Simple visualization tool. 
@@ -408,7 +427,7 @@ Simple visualization tool.
 
 
 <a name="tais"></a>
-<a id="tais"></a>
+<a   id="tais"></a>
 # truncate_arrays_in_struct   [[see code]](/truncate_arrays_in_struct.m)
 
 Truncates all arrays (also cell arrays) that are 1st level fields in a struct to specific indices.
@@ -421,7 +440,7 @@ Also arrays that do not have sufficient size are unmodified.
 
 
 <a name="whichToolboxFor"></a>
-<a id="whichToolboxFor"></a>
+<a   id="whichToolboxFor"></a>
 ## whichToolboxFor   [[see code]](/whichToolboxFor.m)
 
 Retrieves the required Matlab Toolboxes for specified mfile.
