@@ -51,13 +51,19 @@ if ~isempty(args) && isnumeric(args{1})  % user specified n directly, add it to 
    args = ['n', args];
 end
 
+% reshape the data
+xdata = reshape(xdata, [], 1);
+ydata = reshape(ydata, [], 1);
+
 % calculate a default xmindist
 default_mindist = @() 1e-10 * (xdata(end)-xdata(1));
+default_maxdist = @() 1.0   * (xdata(end)-xdata(1));    % undocumented experimental
 
 % process args - olGetOption returns in args the remaining arguments
 [n           , args] = olGetOption(args, 'n'           , []         );
 [xknots      , args] = olGetOption(args, 'knots'       , []         );
 [mindist     , args] = olGetOption(args, 'mindist'     , default_mindist, true);  % evaluate by formula if not given
+[maxdist     , args] = olGetOption(args, 'maxdist'     , default_maxdist, true);  % undocumented experimental
 [optimizer   , args] = olGetOption(args, 'optimizer'   , 'lsqnonlin');
 [optimopts   , args] = olGetOption(args, 'optimopts'   , {}         );
 [yscale      , args] = olGetOption(args, '#yscale'     , []         );            % undocumented experimental
@@ -127,36 +133,106 @@ end
 switch lower(optimizer)
 
    case 'lsqnonlin'
-
+      % ===========
       % Ensure that xknots is always monotonically increasing knot vector
       % by using non-negative "increments" as optimization variables
       % Then:  xknot = xmin + cumsum(increments)
-      xinc = diff(xknots(1:end-1));   % then xinc >= 0 and xknot = xknot(1) + xinc;
+      xinc = diff(xknots);    % NOTE: last knot is free !
       z0 = [xinc, yknots];
+      z0 = reshape(z0, [], 1);
       h  = xknots(end)-xknots(1);
       lb = [ mindist + zeros(numel(xinc), 1)  ; -inf(numel(yknots), 1)  ];
-      ub = [        h * ones(numel(xinc), 1)  ; +inf(numel(yknots), 1)  ];
-      fun = @minFunXY;
+      ub = [ maxdist *  ones(numel(xinc), 1)  ; +inf(numel(yknots), 1)  ];
+      minVecXY_penalize_Xtarget('reset');
+      fun = @(z) minVecXY_penalize_Xtarget(z, xknots(end), 1.0/h);  % last arg: barrier factor -- ensuring last knot fits
       opts = optimoptions(@lsqnonlin ...
          , 'Algorithm'        , 'levenberg-marquardt'  ...
          , 'Display'          , 'iter'                 ...
          , 'UseParallel'      , false                  ...
          , 'FunctionTolerance', 1e-4                   ...
+         , 'MaxFunctionEvaluations', 1e+6              ...
+         , 'MaxIter'          , 100                    ...
          , optimopts{:});
-      % x = lsqnonlin(fun, x0, lb, ub, opts);
-      [z,resnorm,residual,exitflag,output] = lsqnonlin(fun, z0, lb, ub, opts);
+      % linear constraints:  xincs must sum up to the same value (last xknot not optimized!) -- Requires Interior-Point
+      % Aeq = sparse(ones(1, length(xinc)), 1:length(xinc), 1, 1, length(z0), length(xinc));
+      % Beq = sum(xinc);
+      % [z,resnorm,residual,exitflag,output] = lsqnonlin(fun, z0, lb, ub, [], [], Aeq, Beq, [], opts);
+      % call optimizer and setup result for later processing
+      opts10iter = optimoptions(opts, 'Maxiter', 10);
+      [z,resnorm,residual,exitflag,output] = lsqnonlin(fun, z0, lb, ub, opts10iter); % preopt
+      [z,resnorm,residual,exitflag,output] = lsqnonlin(fun,  z, lb, ub, opts);
+      % result
       optinfo = struct('x', z, 'resnorm', resnorm, 'residual', residual, 'exitflag', exitflag, 'output', output);
+      % build result
+      [xknots, yknots] = getKnots_lastNodeFree(z, xknots);
+      [xknots, yknots] = adjust_last_knot_for_feasibility(xknots, yknots, xdata);  
+
+
+   case 'lmfnlsq2'   % 'LMFnlsq2'
+      % ==========
+      % rescale data - overwriting
+      [xdata, ydata, xknots, yknots, mindist, maxdist, orgdata] = scaleALL(xdata, ydata, xknots, yknots, mindist, maxdist, yscale);
+      % Ensure that xknots is always monotonically increasing knot vector by using non-negative "increments" as optimization variables
+      % Then:  xknot = xmin + cumsum(increments)
+      xinc = diff(xknots);    % NOTE: last knot is free !
+      z0 = reshape([xinc, yknots], [], 1);
+      h  = xknots(end)-xknots(1);
+      minVecXY_penalize_Xtarget('reset');
+      fun = @(z) minVecXY_penalize_Xtarget(z, xknots(end), 1.0/h);  % last arg: barrier factor -- ensuring last knot fits
+      % call optimizer and setup result for later processing
+      [z, Ssq, CNT, Res, XY] = LMFnlsq2(fun, z0, 'display', [-1,0], 'Basdx', sqrt(eps)*10, 'ScaleD', 1);
+      % undo scaling
+      [z, xdata, ydata, xknots, ~, mindist, maxdist] = unscaleALL(z, xdata, ydata, xknots, yknots, mindist, maxdist, orgdata);
+      % result
+      optinfo = struct('x', z, 'Ssq', Ssq, 'CNT', CNT, 'Res', Res, 'XY', XY);
+      % build result
+      [xknots, yknots] = getKnots_lastNodeFree(z, xknots);
+      [xknots, yknots] = adjust_last_knot_for_feasibility(xknots, yknots, xdata);  
+
+
+
+   case {'levenbergmarquardt', 'lm'}
+      % ============================
+      % rescale data - overwriting
+    % [xdata, ydata, xknots, yknots, mindist, maxdist, orgdata] = scaleALL(xdata, ydata, xknots, yknots, mindist, maxdist, yscale);
+      % Ensure that xknots is always monotonically increasing knot vector by using non-negative "increments" as optimization variables
+      % Then:  xknot = xmin + cumsum(increments)
+      xinc = diff(xknots);    % NOTE: last knot is free !
+      z0 = reshape([xinc, yknots], [], 1);
+      h  = xknots(end)-xknots(1);
+      minVecXY_penalize_Xtarget('reset');
+      fun = @(z) minVecXY_penalize_Xtarget(z, xknots(end), 1.0/h);  % last arg: barrier factor -- ensuring last knot fits
+      lb = [ mindist + zeros(numel(xinc), 1)  ; -10*ones(numel(yknots), 1)  ];
+      ub = [ maxdist *  ones(numel(xinc), 1)  ; +10*ones(numel(yknots), 1)  ];
+    % disp([lb lb>z0 z0 z0>ub ub]); pause; z0(z0<lb) = lb(z0<lb); z0(z0>ub) = ub(z0>ub);
+      % call optimizer and setup result for later processing
+      opts.Broyden_updates = 'off';
+      opts.Display = 'iter';
+      opts.ScaleProblem = 'none';
+      opts.MaxIter = 1000;
+      opts.MaxFunEvals = 1e6;
+      opts.RelTolX = 1e-5;
+      opts.MinDamping=1e-7;            %   minimal dampening
+      opts.MaxDamping=1e13;
+      opts.FooTol  = 1e-3;
+      % opts.Jacobian = 'simple';
+      [z,Resnorm,fval,exitflag,extra_arguments,output,lambda,Jx] = LevenbergMarquardt(fun,z0,lb,ub,opts);
+      % undo scaling
+    % [z, xdata, ydata, xknots, ~, mindist, maxdist] = unscaleALL(z, xdata, ydata, xknots, yknots, mindist, maxdist, orgdata);
+      % result
+      optinfo = struct('x', z, 'Resnorm', Resnorm, 'fval', fval, 'exitflag', exitflag, 'output', output, 'lambda', lambda, 'Jx', Jx);
+      % build result
+      [xknots, yknots] = getKnots_lastNodeFree(z, xknots);
+      [xknots, yknots] = adjust_last_knot_for_feasibility(xknots, yknots, xdata);  
+
+
+
 
    case 'fminsearch'
+      % ============
       % fminsearch is an unconstrained optimizer, so we have to use a penalty approach
-      % scaling for nelder-mead
-      [xscale, xrange] = get_scale_and_range(xdata);
-      [yscale, yrange] = get_scale_and_range(ydata, yscale);      % take yscale from input
-      [xdata  , org_xdata  ] = scale_data(xdata  , xscale, xrange);
-      [ydata  , org_ydata  ] = scale_data(ydata  , yscale, yrange);
-      [xknots , org_xknots ] = scale_data(xknots , xscale, xrange);
-      [yknots , org_yknots ] = scale_data(yknots , yscale, yrange);
-      [mindist, org_mindist] = scale_data(mindist, xscale, xrange);
+      % rescale data - overwriting
+      [xdata, ydata, xknots, yknots, mindist, maxdist, orgdata] = scaleALL(xdata, ydata, xknots, yknots, mindist, maxdist, yscale);
       xinc = diff(xknots(1:end-1));   % then xinc >= 0 and xknot = xknot(1) + xinc; -- fixes first and last node
       z0 = [xinc, yknots];
       minFunXYpenalized(0);  % init call counter
@@ -169,14 +245,10 @@ switch lower(optimizer)
       if ~isempty(optimopts), opts = optimset(opts, optimopts); end  % update options from user input
       [z,fval,exitflag,output] = fminsearch(fun,z0,opts);            % invoke optimizer      
       % undo scaling
-      z(1:length(xknots)-2)   = unscale_data(z(1:length(xknots)-2)  , xscale, xrange);
-      z(length(xknots)-1:end) = unscale_data(z(length(xknots)-1:end), yscale, yrange);
-      xdata   = org_xdata;
-      ydata   = org_ydata;
-      xknots  = org_xknots; 
-      yknots  = org_xknots; % yknots is not used (it is recalculated from x and konts)
-      mindist = org_mindist; 
- 
+      [z, xdata, ydata, xknots, ~, mindist, maxdist] = unscaleALL(z, xdata, ydata, xknots, yknots, mindist, maxdist, orgdata);
+      % build result
+      [xknots, yknots] = getKnots_lastNodeFixed(z, xknots);
+
 
    otherwise
       error('Unknown optimizer: %s', func2str(optimizer));
@@ -185,11 +257,10 @@ end
 
 
 % assemble output
-[xknots, yknots] = getKnots(z, xknots);
 result.xknots = xknots;
 result.yknots = yknots;
 
-% figure(555); clf; hold on; plot(xknot, yknot, 'r.', 'MarkerSize', 10); plot(datax, datay, 'g.', 'MarkerSize', 2);
+figure(555); clf; hold on; plot(xknots, yknots, 'r.-', 'MarkerSize', 10); plot(xdata, ydata, 'g.', 'MarkerSize', 2);
 
 % finito
 return
@@ -202,32 +273,65 @@ function [x, y] = dissectXY(z, nkx)
    y = z( nkx+1 : end );
 end
 
-function [kx, ky] = getKnots(z, kx)
+function [kx, ky, xincr] = getKnots_lastNodeFixed(z, kx)
    [xincr, ky] = dissectXY(z, length(kx)-2);  % first and last x knot is fixed
-   kx = [kx(1) , kx(1) + cumsum(xincr) , kx(end)];
+   kx = [kx(1) ; kx(1) + cumsum(xincr) ; kx(end)];
 end
 
-function rv = minFunXY(z)
-   [kx, ky] = getKnots(z, xknots);          % split z into inc_x and knot_y part
-   rv = calcResVec(kx, ky, xdata, ydata);  % get the residual vector
+function [kx, ky, xincr] = getKnots_lastNodeFree(z, kx)
+   [xincr, ky] = dissectXY(z, length(kx)-1);  % only first x knot is fixed
+   kx = [kx(1) ; kx(1) + cumsum(xincr)];
 end
+
+
+function rv = minVecXY(z)
+   [kx, ky] = getKnots_lastNodeFixed(z, xknots);    % split z into inc_x and knot_y part
+   rv = calcResVec(kx, ky, xdata, ydata);           % get the residual vector
+end
+
 
 function fval = minFunXYpenalized(z)
    persistent nn                                    % call counter
    if isscalar(z) && (z==0), nn = 0; return, end    % init call counter
    nn = nn + 1;                                     % step call counter
-   [kx, ky] = getKnots(z, xknots);                  % split z into inc_x and knot_y part
-   n_incs = (length(xknots)-2);                     % number of increments (knot variables)
-   incs   = z(1:n_incs);                            % increments (knot variables)
-   % rv = calcResVec(kx, ky, xdata, ydata);         % get the residual vector
-   % rn = norm(rv);                                 % residual norm
-   rn = calcResValue(kx, ky, xdata, ydata);         % get the residual vector
+   [kx, ky, xincr] = getKnots_lastNodeFixed(z, xknots);    % split z into inc_x and knot_y part
+   rn = calcResValue(kx, ky, xdata, ydata);         % get the residual vector norm
    penalty = 0;                                     % initialize penalty
-   if any(incs < mindist)
-      penalty = sum( max(0, mindist - incs).^2 );   % penalty when approaching mindist
+   if any(xincr < mindist)
+      penalty = sum( max(0, mindist - xincr).^2 );  % penalty when approaching mindist
+   end
+   if any(xincr > maxdist)
+      penalty = sum( max(0, maxdist - xincr).^2 );  % penalty when approaching maxdist
    end
    fval = rn + penalty;
    if ~mod(nn, 1000), fprintf('Iteration #%3d:  fval = %10.6g  (%10.6g +  %10.6g penalty) \n', nn/1000, fval, rn, penalty); end
+end
+
+
+
+% -- not well performing --
+% function rv = minVecXY_with_tanh_constraint(z, barrier, cweight)
+%    [kx, ky, xincr] = getKnots(z, xknots);           % split z into inc_x and knot_y part
+%    rv = calcResVec(kx, ky, xdata, ydata);           % get the residual vector
+%    xincsum = sum(xincr);
+%    cval = tanh_constraint(xincsum, barrier, 0.0001, cweight, +1);
+%    rv(end+1) = cval;  % add barrier for not hitting the desired interval length
+% end
+
+
+
+function rv = minVecXY_penalize_Xtarget(z, xtarget, penalty)
+   persistent penaltyscaling;
+   if (~isnumeric(z)) && strcmpi(z, 'reset'), penaltyscaling = []; return; end
+   [kx, ky, xincr] = getKnots_lastNodeFree(z, xknots);           % split z into inc_x and knot_y part
+   rv = calcResVec(kx, ky, xdata, ydata);           % get the residual vector
+   % initialize the penaltyfactor from the (first) residual vector norm
+   if isempty(penaltyscaling)
+      penaltyscaling = 10 * norm(rv);
+      % penaltyscaling = 1;
+   end
+   % add penalty for not hitting the desired interval length
+   rv(end+1) = penaltyscaling * penalty * (sum(xincr) - xtarget); % add penalization for changing the total interval length
 end
 
 
@@ -284,6 +388,7 @@ function resval = calcResValue(knot_x, knot_y, data_x, data_y)
    end
 end
 
+
 % Faster in profiler, but much slower when compiled
 function resvec = calcResVecXX(knot_x, knot_y, data_x, data_y)
    resvec = zeros(size(data_x));
@@ -321,7 +426,7 @@ function resvec = calcResVec(knot_x, knot_y, data_x, data_y)
    for i = 1:length(data_x)
       x = data_x(i);
       % step forward the current interval if needed
-      if (x > xr)
+      if (x > xr) && (ki < length(knot_x))
          ki = ki + 1;
          xl = xr;
          xr = knot_x(ki);
@@ -337,6 +442,59 @@ function resvec = calcResVec(knot_x, knot_y, data_x, data_y)
       resvec(i) = data_y(i) - y;
    end
 end
+
+
+function [xknots, yknots] = adjust_last_knot_for_feasibility(xknots, yknots, xdata)
+   % There is the possibility that the last (optimized) node is exactly at xdata(end).
+   % But since we do a linear fit that can be easily adjusted.
+   dx = xknots(end) - xknots(end-1);
+   dy = yknots(end) - yknots(end-1);
+   slope = dy/dx;
+   xknots(end) = xdata(end); % ensure exactly the last xdata point
+   yknots(end) = yknots(end-1) + slope * (xknots(end) - xknots(end-1));
+end
+
+
+
+function val = tanh_constraint(x, mid, steep, weight, direction)
+   tanhval = 0.5 * ( tanh( (x-mid) ./ steep * pi ) + 1.0 );
+   if (direction > 0)
+      val = weight .* tanhval;
+   else
+      val = weight .* (1.0 - tanhval);
+   end
+end
+
+
+
+function [xdata, ydata, xknots, yknots, mindist, maxdist, orgdata] = scaleALL(xdata, ydata, xknots, yknots, mindist, maxdist, yscale)
+   [xscale, xrange] = get_scale_and_range(xdata);
+   [yscale, yrange] = get_scale_and_range(ydata, yscale);      % take yscale from input
+   [xdata  , org_xdata  ] = scale_data(xdata  , xscale, xrange);
+   [ydata  , org_ydata  ] = scale_data(ydata  , yscale, yrange);
+   [xknots , org_xknots ] = scale_data(xknots , xscale, xrange);
+   [yknots , org_yknots ] = scale_data(yknots , yscale, yrange);
+   [mindist, org_mindist] = scale_data(mindist, xscale, xrange);
+   [maxdist, org_maxdist] = scale_data(maxdist, xscale, xrange);
+   orgdata  = struct( 'xscale',  xscale,  'xrange',  xrange, ...
+                      'yscale',  yscale,  'yrange',  yrange, ...
+                      'xdata'  , org_xdata  , 'ydata'  , org_ydata, ...
+                      'xknots' , org_xknots , 'yknots' , org_yknots, ...
+                      'mindist', org_mindist, 'maxdist', org_maxdist);
+end
+
+function [z, xdata, ydata, xknots, yknots, mindist, maxdist] = unscaleALL(z, xdata, ydata, xknots, yknots, mindist, maxdist, orgdata)
+   z(1:length(xknots)-2)   = unscale_data(z(1:length(xknots)-2)  , orgdata.xscale, orgdata.xrange);
+   z(length(xknots)-1:end) = unscale_data(z(length(xknots)-1:end), orgdata.yscale, orgdata.yrange);
+   xdata   = orgdata.xdata;
+   ydata   = orgdata.ydata;
+   xknots  = orgdata.xknots;
+   yknots  = orgdata.xknots; % yknots is not used (it is recalculated from x and konts)
+   mindist = orgdata.mindist;
+   maxdist = orgdata.maxdist;
+end
+
+
 
 %%% -- CONDENSED VERSION OF calcResVec -- little bit slower
 % function resvec = calcResVec2(knot_x, knot_y, data_x, data_y)
