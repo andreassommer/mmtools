@@ -41,6 +41,7 @@ Tools marked with ⭐ might be especially worth a look.
 * [msession⭐](#msession)                                - Store and retrieve Matlab sessions (open files, variables, etc.) [[->code]](/msession.m)
 * [optionlists⭐](#optionlists)                          - Handle name-value pairs                                          [[->code]](/olGetOption.m)
 * [pointpicker](#pointpicker)                            - Pick and collect coordinates by clicking in figure               [[->code]](/pointpicker.m)
+* [polynomial_to_ccode](#polynomial_to_ccode)            - Generates C code from (centered/normalized) polynomial           [[->code]](./polynomial_to_ccode.m)
 * [roundto](#roundto)                                    - Rounds values to nearest divisor value                           [[->code]](/roundto.m)
 * [stopOnKeyPress](#stopOnKeyPress)                      - displays a stop figure that reacts on key press                  [[->code]](/stopOnKeyPress.m)
 * [sviz](#sviz)                                          - Simple visualizer                                                [[->code]](/sviz.m)
@@ -384,6 +385,21 @@ The pointpicker may be registered to multiple figures/axes, but only collects po
 By pressing key 'a' while in the registered axis, the mouse changes to a crosshairs and multiple points can be collected;
 the last one picked can be deleted by pressing 'd'. Collection is ended by pressing 'x'.
 Collected points may be retrieved into a variable by `points = pointpicker('#GET')` or saved to file.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+
+
+<a   id="polynomial_to_ccode"></a>
+<a name="polynomial_to_ccode"></a>
+## polynomial_to_ccode   [[see code]](./polynomial_to_ccode.m)
+
+Generates C code from a (possibly centered and normalized) polynomial.
+
+Also, a Horner-scheme based evaluator can be generated.
+There is more flexibility: Comments, variable naming, user-defined includes, and much more.
 
 [Return to list of tools](#list-of-tools)
 
