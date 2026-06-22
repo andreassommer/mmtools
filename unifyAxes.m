@@ -42,8 +42,8 @@ if (nargin < 6) ,  gridopt = '';  end
 % special case for linkaxes: 'all'
 if strcmpi(linkopt, 'all'), linkopt = 'xyz'; end
 
-% helper to get axis information
-applyToAxes = @(fun, axh) cell2mat(arrayfun(fun, axh, 'UniformOutput', false));
+% helper to get axis information -- transpose the arrayfun result to avoid getting a single column by cell2mat
+applyToAxes = @(fun, axh) cell2mat(arrayfun(fun, axh, 'UniformOutput', false).');  % must transpose here!
 
 % get current limits
 curlimx = applyToAxes(@xlim, axh);
