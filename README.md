@@ -47,6 +47,7 @@ Tools marked with ⭐ might be especially worth a look.
 * [stopOnKeyPress](#stopOnKeyPress)                      - displays a stop figure that reacts on key press                  [[->code]](./stopOnKeyPress.m)
 * [sviz](#sviz)                                          - Simple visualizer                                                [[->code]](./sviz.m)
 * [truncate_arrays_in_struct](#tais)                     - Truncate long array fields in a struct                           [[->code]](./truncate_arrays_in_struct.m)
+* [unifyAxisScales](#unifyAxes)                          - Scales and links several axis to unified axis limits             [[->code]](./unifyAxes.m)
 * [whichToolboxFor](#whichToolboxFor)                    - Investigate toolbox dependency of code                           [[->code]](./whichToolboxFor.m)
 
 Documentation is provided inside the code and thus available using Matlab's help system via `help` and `doc`.
@@ -450,6 +451,18 @@ Simple visualization tool.
 Truncates all arrays (also cell arrays) that are 1st level fields in a struct to specific indices.
 Scalar fields, chars or strings are left unmodified.
 Also arrays that do not have sufficient size are unmodified.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+
+<a name="unifyAxes"></a>
+<a   id="unifyAxes"></a>
+# unifyAxes   [[see code]](./unifyAxes.m)
+
+Scales and links several axis to unified limits. Limits can be user specified or taken from existing plots.
+Axes can be linked for common zooming and panning, and a common grid can be enabled.
 
 [Return to list of tools](#list-of-tools)
 
