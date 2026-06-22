@@ -37,6 +37,7 @@ persistent caller_width  caller_formatter  autonewline
 % initialize persistent variables
 if isempty(caller_width)    , caller_width = 25; end
 if isempty(caller_formatter), caller_formatter = @(caller) caller_formatter_centered(caller, caller_width); end
+if isempty(autonewline)     , autonewline = false; end
 
 % check if first argument is special command
 if istext(arg1_printer) && startsWith(arg1_printer, '#') || nargin == 2
@@ -170,7 +171,7 @@ function out = makeMessageInternal(caller, caller_formatter, format_processor, o
 
    % add newline if requested
    if autonewline
-      if ~endsWith(fmt, '\n')     % works for strings
+      if ~endsWith(fmt, '\n')      % works for strings
          fmt = strcat(fmt, '\n');  % and char arrays
       end
    end
