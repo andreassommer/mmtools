@@ -17,8 +17,10 @@ E-Mail: code@andreas-sommer.eu
 Tools marked with ⭐ might be especially worth a look.  
 
 * [ADLER32](#ADLER32)                                    - Compute Adler32 hash                                             [[->code]](./ADLER32.m)
+* [calc_mx_plus_b](#calc_mx_plus_b)                      - Compute slope and y-axis intercept from 2 points of a line       [[->code]](./calc_mx_plus_b.m)
 * [condSet](#condSet)                                    - Conditionally set values in (cell) array/matrix/vector           [[->code]](./condSet.m)
 * [DEBUGME](#DEBUGME)                                    - Debug marker/helper for changed values                           [[->code]](./DEBUGME.m)
+* [ensure_unique](#ensure_unique)                        - Modifies array elements to ensure values are unique              [[->code]](./ensure_unique.m)
 * [execWSL](#execWSL)                                    - Execute command in WSL (Windows Subsystem for Linux)             [[->code]](./execWSL.m)
 * [filecopy](#filecopy)                                  - Copy individual files                                            [[->code]](./filecopy.m)
 * [findfield](#findfield)                                - Find field in struct by regular expressions                      [[->code]](./findfield.m)
@@ -43,6 +45,7 @@ Tools marked with ⭐ might be especially worth a look.
 * [optionlists⭐](#optionlists)                          - Handle name-value pairs                                          [[->code]](./olGetOption.m)
 * [pointpicker](#pointpicker)                            - Pick and collect coordinates by clicking in figure               [[->code]](./pointpicker.m)
 * [polynomial_to_ccode](#polynomial_to_ccode)            - Generates C code from (centered/normalized) polynomial           [[->code]](./polynomial_to_ccode.m)
+* [pwlinpp](#pwlinpp)                                    - Make piecewise linear function (wrapper for mkpp)                [[->code]](./pwlinpp.m)
 * [roundto](#roundto)                                    - Rounds values to nearest divisor value                           [[->code]](./roundto.m)
 * [stopOnKeyPress](#stopOnKeyPress)                      - displays a stop figure that reacts on key press                  [[->code]](./stopOnKeyPress.m)
 * [sviz](#sviz)                                          - Simple visualizer                                                [[->code]](./sviz.m)
@@ -59,6 +62,7 @@ Documentation is provided inside the code and thus available using Matlab's help
 
 
 
+
 <a name="ADLER32"></a>
 <a   id="ADLER32"></a>
 ## ADLER32   [[see code]](./ADLER32.m)
@@ -66,6 +70,20 @@ Documentation is provided inside the code and thus available using Matlab's help
 Computes the Adler32 hash of a given char array.
 
 [Return to list of tools](#list-of-tools)
+
+
+
+
+
+<a name="calc_mx_plus_b"></a>
+<a   id="calc_mx_plus_b"></a>
+## calc_mx_plus_b   [[see code]](./calc_mx_plus_b.m)
+
+Simple function to calculate slope and y-axis intercept of a line given by two points.
+
+[Return to list of tools](#list-of-tools)
+
+
 
 
 
@@ -94,6 +112,8 @@ z = condSet(tf, 'YES', @sin, [])    % --> returns 'YES' if tf is true, otherwise
 
 
 
+
+
 <a name="DEBUGME"></a>
 <a   id="DEBUGME"></a>
 ## DEBUGME   [[see code]](./DEBUGME.m)
@@ -114,6 +134,21 @@ Special command initiated with `#` allow configuration of debug output.
 
 
 
+
+
+<a name="ensure_unique"></a>
+<a   id="ensure_unique"></a>
+## ensure_unique   [[see code]](./ensure_unique.m)
+
+Ensures that all values in an array are unique by modifying them a tiny bit.
+Modification can be done relatively or absolutely. 
+
+[Return to list of tools](#list-of-tools)
+
+
+
+
+
 <a name="execWSL"></a>
 <a   id="execWSL"></a>
 ## execWSL   [[see code]](./execWSL.m)
@@ -122,6 +157,8 @@ Executes a command in WSL (Windows Subsystem for Linux).
 Distribution can be chosen. Dryrun and echoing supported.
 
 [Return to list of tools](#list-of-tools)
+
+
 
 
 
@@ -137,6 +174,8 @@ but creates the destination file with the current user's permission set.
 
 
 
+
+
 <a name="findfield"></a>
 <a   id="findfield"></a>
 ## findfield   [[see code]](./findfield.m)
@@ -149,6 +188,8 @@ and also provides information if an exact match is found.
 
 
 
+
+
 <a name="findFirstGreater"></a><a name="findFirstGreaterRev"></a><a name="findFirstSmaller"></a><a name="findFirstSmallerRev"></a>
 <a   id="findFirstGreater"></a><a   id="findFirstGreaterRev"></a><a   id="findFirstSmaller"></a><a   id="findFirstSmallerRev"></a>
 ## findFirstGreater [[see code]](./findFirstGreater.m) | findFirstGreaterRev [[see code]](./findFirstGreaterRev.m) | findFirstSmaller [[see code]](./findFirstSmaller.m) findFirstSmallerRev [[see code]](./findFirstSmallerRev.m)
@@ -157,6 +198,8 @@ Firns first entry in array that is greater or smaller than a specified value, se
 Optionally starts search at given index.
 
 [Return to list of tools](#list-of-tools)
+
+
 
 
 
@@ -175,6 +218,8 @@ first and the sorted arrays may be delivered upon request. When querying a singl
 
 
 
+
+
 <a name="hornereval"></a>
 <a   id="hornereval"></a>
 ## hornereval   [[see code]](./hornereval.m)
@@ -185,6 +230,8 @@ Evaluation of 1d polynomials using Horner's scheme.
 
 
 
+
+
 <a name="hornereval2D"></a>
 <a   id="hornereval2D"></a>
 ## hornereval2D   [[see code]](./hornereval2D.m)
@@ -192,6 +239,8 @@ Evaluation of 1d polynomials using Horner's scheme.
 Evaluation of 2d polynomials using Horner's scheme.
 
 [Return to list of tools](#list-of-tools)
+
+
 
 
 
@@ -206,6 +255,8 @@ Relies on Matlab's dbstack.
 
 
 
+
+
 <a name="getParentFigure"></a>
 <a   id="getParentFigure"></a>
 ## getParentFigure   [[see code]](./getParentFigure.m)
@@ -216,6 +267,8 @@ Retrieve the handle of the figure that contains the specified graphics handle.
 
 
 
+
+
 <a name="getWorkspaceVariable"></a>
 <a   id="getWorkspaceVariable"></a>
 ## getWorkspaceVariable   [[see code]](./getWorkspaceVariable.m)
@@ -223,6 +276,8 @@ Retrieve the handle of the figure that contains the specified graphics handle.
 Retrieve a variable from other workspace (base or caller), with optional not-found value and error signaling capability.
 
 [Return to list of tools](#list-of-tools)
+
+
 
 
 
@@ -239,6 +294,8 @@ It generates switching functions automatically from existing code with IF statem
 
 
 
+
+
 <a name="isfigure"></a>
 <a   id="isfigure"></a>
 ## isfigure   [[see code]](./isfigure.m)
@@ -246,6 +303,8 @@ It generates switching functions automatically from existing code with IF statem
 Queries if specified handle refers to a (valid) figure.
 
 [Return to list of tools](#list-of-tools)
+
+
 
 
 
@@ -259,6 +318,8 @@ Checks if specified object is a char array or a string
 
 
 
+
+
 <a name="makeClosure"></a>
 <a   id="makeClosure"></a>
 ## makeClosure   [[see code]](./makeClosure.m)
@@ -266,6 +327,8 @@ Checks if specified object is a char array or a string
 Generates a closure to mimick pass-by-reference style of programming.
 
 [Return to list of tools](#list-of-tools)
+
+
 
 
 
@@ -278,6 +341,8 @@ makeMessage is a wrapper around Matlab's *printf functions, but accepts also oth
 printer functions that follow the sprintf or fprintf API.
 
 [Return to list of tools](#list-of-tools)
+
+
 
 
 
@@ -303,6 +368,7 @@ This will create a structure with the following layout:
 
 
 
+
 <a name="msession"></a>
 <a   id="msession"></a>
 # msession⭐   [[see code]](./msession.m)
@@ -314,6 +380,7 @@ The user can select what to be stored:
   - global variables
 
 [Return to list of tools](#list-of-tools)
+
 
 
 
@@ -376,6 +443,7 @@ using `olWarnIfNotEmpty`.
 
 
 
+
 <a   id="pointpicker"></a>
 <a name="pointpicker"></a>
 ## pointpicker   [[see code]](./pointpicker.m)
@@ -408,6 +476,35 @@ There is more flexibility: Comments, variable naming, user-defined includes, and
 
 
 
+
+<a   id="pwlinpp"></a>
+<a name="pwlinpp"></a>
+## pwlinpp   [[see code]](./pwlinpp.m)
+
+Convenience wrapper for Matlab's mkpp(), to create piecewise linear functions
+that can be evaluated using ppval().  
+The pieces can be specified in several ways:
+
+1) As a list of points through which the polyline shall pass  
+   Example:   `pp = pwlinpp([1,0; 2,1; 4,4; 5,1])` 
+   Create a piecewise linear function passing through points [1,0], [2,1], [4,4] and [5,1]
+
+2) By breaks and coefs that specify the breakpoints and
+   the slopes and y-axis intercepts in global coordinates  
+   Example:   `pp = pwlinpp([1 2 4 5], [1, 0; 2, 0; 3, 0])`  
+   Segments consist of piecewise linear function with slopes 1, 2, 3 and y-axis-intercept all 0
+
+3) By breaks and coefs that specify the value at the first breakpoint and the slopes of the
+   following segments, creating a continuous trajectory.  
+   Example:   `pp = pwlinpp([1 2 4 5], [5, -1, 2, 0])`  
+   Starting at point (1,5) with slope -1, and slopes 2 and 0 at the subsequent break points.
+
+[Return to list of tools](#list-of-tools)
+
+
+
+
+
 <a   id="roundto"></a>
 <a name="roundto"></a>
 ## roundto   [[see code]](./roundto.m)
@@ -416,6 +513,7 @@ Rounds values to the nearest divisor value.
 See roundto_example.m for an example.
 
 [Return to list of tools](#list-of-tools)
+
 
 
 
@@ -433,6 +531,7 @@ See the code for a detailed usage with example.
 
 
 
+
 <a name="sviz"></a>
 <a   id="sviz"></a>
 # sviz   [[see code]](./sviz.m)
@@ -440,6 +539,7 @@ See the code for a detailed usage with example.
 Simple visualization tool. 
 
 [Return to list of tools](#list-of-tools)
+
 
 
 
@@ -457,6 +557,7 @@ Also arrays that do not have sufficient size are unmodified.
 
 
 
+
 <a name="unifyAxes"></a>
 <a   id="unifyAxes"></a>
 # unifyAxes   [[see code]](./unifyAxes.m)
@@ -465,6 +566,7 @@ Scales and links several axis to unified limits. Limits can be user specified or
 Axes can be linked for common zooming and panning, and a common grid can be enabled.
 
 [Return to list of tools](#list-of-tools)
+
 
 
 
