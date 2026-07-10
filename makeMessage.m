@@ -1,9 +1,10 @@
-function varargout = makeMessage(arg1_printer, arg2_fID, varargin)
+function varargout = makeMessage(varargin)
 % makeMessage( ... )
 % makeMessage( fID, ... )
 % makeMessage( printfunc, ... )
 % makeMessage( printfunc, fID, ... )
 % makeMessage( special, arg );
+% makeMessage( special, ... );
 % out = makeMessage( ... )
 %
 % Displays informative messages.
@@ -25,9 +26,11 @@ function varargout = makeMessage(arg1_printer, arg2_fID, varargin)
 %                               a subsequent call to #set_caller_formatter is necessary to take effect
 %     #set_caller_formatter --> set arg to 'centered', 'leftaligned', or 'rightaligned'
 %     #set_autonewline      --> set arg to true to emit a newline automatically
+%     #nocaller             --> output without emitting caller (e.g. for same-line printing)
+%     #raw                  --> no processing of format is done, just forwarding args (incl. fmt) to printer
 %
 %
-% Andreas Sommer, Aug2023, Sep2024
+% Andreas Sommer, Aug2023, Sep2024, Jun2026
 % code@andreas-sommer.eu
 %
 
@@ -39,23 +42,36 @@ if isempty(caller_width)    , caller_width = 25; end
 if isempty(caller_formatter), caller_formatter = @(caller) caller_formatter_centered(caller, caller_width); end
 if isempty(autonewline)     , autonewline = false; end
 
+% collect all input arguments in a (modifiable list)
+arglist = varargin;
+
+% internal config
+display_caller = true;
+rawmode        = false;
+
 % check if first argument is special command
-if istext(arg1_printer) && startsWith(arg1_printer, '#') || nargin == 2
-   switch lower(arg1_printer)
+if (nargin >=1) && istext(arglist{1}) && startsWith(arglist{1}, '#')
+   switch lower(arglist{1})
       case '#set_caller_width'
-         caller_width = arg2_fID;
+         caller_width = arglist{2};
          return
       case '#set_caller_formatter'
-         switch(lower(arg2_fID))
+         switch(lower(arglist{2}))
             case 'centered'    , caller_formatter = @(caller) caller_formatter_centered(caller, caller_width);
             case 'leftaligned' , caller_formatter = @(caller) caller_formatter_leftaligned(caller, caller_width);
             case 'rightaligned', caller_formatter = @(caller) caller_formatter_rightaligned(caller, caller_width);
-            otherwise, error('Unknown caller formatter: %s', arg2_fID);
+            otherwise, error('Unknown caller formatter: %s', arglist{2});
          end
          return
       case '#set_autonewline'
-         if arg2_fID, autonewline = true; else, autonewline = false; end
+         if arglist{2}, autonewline = true; else, autonewline = false; end
          return
+      case '#nocaller'
+         display_caller = false;
+         arglist = arglist(2:end); % remove special command from argument list
+      case '#raw'
+         rawmode = true;
+         arglist = arglist(2:end); % remove special command from argument list
       otherwise % do nothing as the user might want to output a string starting with #
    end
 end
@@ -68,7 +84,11 @@ format_processor = @format_processor_default;
 output_requested = (nargout > 0);
 
 % get caller first (because makeMessage might call other functions)
-caller = getCaller(1);  % 1: depth excluding makeMessage itself
+if display_caller 
+   caller = getCaller(1);  % 1: depth excluding makeMessage itself
+else
+   caller = '';
+end
 
 % 5 cases of calling:
 % (1) makeMessage()
@@ -76,86 +96,80 @@ caller = getCaller(1);  % 1: depth excluding makeMessage itself
 % (3) makeMessage(fID, ...)
 % (4) makeMessage(printer, ...)
 % (5) makeMessage(printer, fID, ...)
+% NOTE:  the makeMessage('#special', ...) is already processed above
 
-% CASE (1):  makeMessage()
+% CASE (1):  makeMessage()  --  emit only caller
 if (nargin == 0)
    printerargs = {};
-   varargout = callPrinter(caller, defaultprinter, default_fID, printerargs); 
+   varargout = callPrinter(caller, default_printer, default_fID, printerargs); 
    return; 
 end
 
 % Determine type of arg1 and arg2
 if (nargin >= 1)
-   arg1_is_printer = isa(arg1_printer, 'function_handle');
-   arg1_is_fID     = isnumeric(arg1_printer);
+   arg1_is_printer = isa(arglist{1}, 'function_handle');
+   arg1_is_fID     = isnumeric(arglist{1});
 end
 if (nargin >= 2)
-   arg2_is_fID  = arg1_is_printer && isnumeric(arg2_fID);
+   arg2_is_fID  = arg1_is_printer && isnumeric(arglist{2});
 else
    arg2_is_fID  = false;
 end
 
-
 % CASE (2):  makeMessage(...)
 if ~(arg1_is_printer || arg1_is_fID) && ~arg2_is_fID
-   if (nargin == 1)
-      printerargs = { arg1_printer };                          % just single print arc
-   else
-      printerargs = [ {arg1_printer , arg2_fID}  varargin];    % all are print args
-   end
+   printerargs = arglist;
    varargout = callPrinter(caller, default_printer, default_fID, printerargs);
    return
 end
+
 % CASE (3):  makeMessage(fID, ...)
 if arg1_is_fID 
-   fID = arg1_printer;
+   fID = arglist{1};
    if (nargin == 1)
       printerargs = {};
    else
-      printerargs = [ {arg2_fID} , varargin ];
+      printerargs = arglist(2:end);
    end
    varargout = callPrinter(caller, default_printer, fID, printerargs);
    return
 end
+
 % CASE (4):  makeMessage(printer, ...)
 if arg1_is_printer && (~arg2_is_fID)
-   if (nargin == 1)
-      printerargs = {};
-   else
-      printerargs = [ {arg2_fID} , varargin ];
-   end
-   varargout = callPrinter(caller, arg1_printer, default_fID, printerargs);
+   printerargs = arglist(2:end);
+   varargout = callPrinter(caller, arglist{1}, default_fID, printerargs);
    return
 end
 
 % if we reached this point, we are in case (5)
 
 % CASE (5): makeMessage(printer, fID, ...)
-printerargs = varargin;
-varargout = callPrinter(caller, arg1_printer, arg2_fID, printerargs);
+printerargs = arglist;
+varargout = callPrinter(caller, arglist{1}, arglist{2}, printerargs);
 
 % finito
 return
 
-
-%% internal helper
+%%% internal helper
    function out = callPrinter(caller, printer, fID, printerargs)
-      out = makeMessageInternal(caller, caller_formatter, format_processor, output_requested, printer, fID, printerargs, autonewline);
+      out = makeMessageInternal(caller, caller_formatter, format_processor, output_requested, printer, fID, printerargs, autonewline, rawmode);
    end
 
 end % of function
 
 
+
 %% HELPERS
 
-function out = makeMessageInternal(caller, caller_formatter, format_processor, output_requested, printer, fID, args, autonewline)
+function out = makeMessageInternal(caller, caller_formatter, format_processor, output_requested, printer, fID, args, autonewline, rawmode)
    % INTERNAL PRINTER  
 
    % build the format string
    if isempty(args)
       fmt = '';
       args = {};
-   elseif ( length(args)==1 )
+   elseif ( length(args)==1 )   %#ok<ISCL> - just better to read with length() than isscalar()
       fmt = args{1};
       args = {};
    else
@@ -163,18 +177,25 @@ function out = makeMessageInternal(caller, caller_formatter, format_processor, o
       args = args(2:end);
    end
 
-   % add caller to format string
-   caller = caller_formatter(caller);
-   
-   % make/process format string
-   fmt = format_processor(fmt, caller);
+   % DEFAULT MODE HERE -- NOT rawmode (in rawmode, we forward fmt and args unmodified to the printer=
+   if ~rawmode
 
-   % add newline if requested
-   if autonewline
-      if ~endsWith(fmt, '\n')      % works for strings
-         fmt = strcat(fmt, '\n');  % and char arrays
+      % add caller to format string -- unless caller is empty
+      if ~isempty(caller)
+         caller = caller_formatter(caller);
       end
-   end
+
+      % make/process format string
+      fmt = format_processor(fmt, caller);
+
+      % add newline if requested
+      if autonewline
+         if ~endsWith(fmt, '\n')      % works for strings
+            fmt = strcat(fmt, '\n');  % and char arrays
+         end
+      end
+
+   end % of not in rawmode
 
    % build the argument list
    if isempty(fID)
@@ -186,7 +207,16 @@ function out = makeMessageInternal(caller, caller_formatter, format_processor, o
    % corner case everything empty: ensure it's a cell
    if ~iscell(printerargs), printerargs = {}; end
 
+   % try printing
+   out = tryPrinting(printer, printerargs, output_requested);
+
    % invoke the printer - works also if args is (empty) 1x0 cell array
+end
+
+
+
+function out = tryPrinting(printer, printerargs, output_requested)
+   % do the printing and cope for errors
    try
       if (output_requested)
          out = printer(printerargs{:});
@@ -199,28 +229,32 @@ function out = makeMessageInternal(caller, caller_formatter, format_processor, o
       warning('Printer error.  --  Printer = @%s  --  fID = %g ', func2str(printer), fID)
       rethrow(ME)
    end
-
 end
 
-%% HELPERS
+function fmt = format_processor_default(fmt, caller)
+   % DEFAULT FORMAT PROCESSOR
+   fmt = convertStringsToChars(fmt);                   % ensure char arrays
+   [fmt, newlines] = processBeginningNewlines(fmt);    % emit newlines first, before [caller]
+   fmt = sprintf('%s%s%s', newlines, caller, fmt);
+end
 
+% CALLER FORMATTERS
 function caller = caller_formatter_rightaligned(caller, fieldWidth)
-   fmt = '[%*s]';
+   fmt = '[%*s]  ';
    caller = upper(caller);
    caller = sprintf(fmt, fieldWidth, caller);
 end
-
 function caller = caller_formatter_leftaligned(caller, fieldWidth)
-   fmt = '[%*s]';
+   fmt = '[%*s]  ';
    caller = upper(caller);
    caller = sprintf(fmt, -fieldWidth, caller);
 end
-
 function caller = caller_formatter_centered(caller, fieldWidth)
    caller = upper(caller);
-   caller = sprintf('[%s]', centerStr(caller, fieldWidth));
+   caller = sprintf('[%s]  ', centerStr(caller, fieldWidth));
 end
 
+% FORMAT HELPERS
 
 function str = centerStr(str, fieldwidth)
    strlen = length(str);
@@ -229,21 +263,13 @@ function str = centerStr(str, fieldwidth)
    str = sprintf('%*s%*s', fix(mid)+numel(str), str, ceil(mid), '');
 end
 
-
-function fmt = format_processor_default(fmt, caller)
-   fmt = convertStringsToChars(fmt);   % ensure char arrays
-   [fmt, newlines] = processBeginningNewlines(fmt);    % emit newlines first, before [caller]
-   fmt = sprintf('%s%s  %s', newlines, caller, fmt);
-end
-
-
 function [fmt, newlines] = processBeginningNewlines(fmt)
    newlinecode = '\n';
    newlinecount = 0;
    newlines = '';
    while startsWith(fmt,newlinecode)
       newlinecount = newlinecount + 1;
-      fmt(1:2) = [];  % remove '\n' from format
-      newlines(end+1) = newline(); %#ok<AGROW>   Probably only 1,2,3 times a newline
+      fmt(1:2) = [];  % remove '\n' from format -- NOTE: It's a format string, so '\n', not CRLF or LF
+      newlines(end+1) = newline(); %#ok<AGROW>   Probably only 1,2,3 times a newline, growing not a problem
    end
 end
