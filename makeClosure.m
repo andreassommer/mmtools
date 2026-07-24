@@ -37,7 +37,7 @@ function handle = makeClosure(inputData)
    %
    % Author: Andreas Sommer, Feb2017, Sep2020
    % andreas.sommer@iwr.uni-heidelberg.de
-   % email@andreas-sommer.eu
+   % code@andreas-sommer.eu
    %
 
    % Though persistency in makeClosure is not needed (as it it only called once)
